@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { getConfig } from '../utils/config.js';
+import { authenticatedPost, authenticatedGet, buildApiUrl, handleApiResponse } from '../utils/api.js';
 
 /**
  * ElizaOS Sessions API Hook - Official Implementation
@@ -49,30 +50,19 @@ function useElizaSession(agentId, userId) {
       console.log('   User ID:', userId);
       
       // Official Sessions API call - exact from documentation
-      const response = await fetch(`${BASE_URL}/api/messaging/sessions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip, deflate, br', // OPTIMIZATION: Enable compression
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          agentId: agentId,
-          userId: userId,
-          metadata: {
-            platform: 'web',
-            username: 'user',
-            interface: 'purl-chat-app'
-          }
-        })
-      });
+      const url = buildApiUrl('/api/messaging/sessions');
+      const requestData = {
+        agentId: agentId,
+        userId: userId,
+        metadata: {
+          platform: 'web',
+          username: 'user',
+          interface: 'purl-chat-app'
+        }
+      };
       
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-        throw new Error(`Session creation failed: ${response.status} - ${errorData.message || 'Unknown error'}`);
-      }
-      
-      const sessionData = await response.json();
+      const response = await authenticatedPost(url, requestData);
+      const sessionData = await handleApiResponse(response, 'Session creation');
       const newSessionId = sessionData.sessionId;
       
       console.log('✅ [Sessions API] Session created successfully:', newSessionId);
@@ -113,12 +103,8 @@ function useElizaSession(agentId, userId) {
     pollingRef.current = setInterval(async () => {
       try {
         console.log('📊 [Sessions API] Polling for new messages...');
-        const response = await fetch(`${BASE_URL}/api/messaging/sessions/${sessionId}/messages`, {
-          headers: {
-            'Accept-Encoding': 'gzip, deflate, br', // OPTIMIZATION: Enable compression
-            'Accept': 'application/json'
-          }
-        });
+        const url = buildApiUrl(`/api/messaging/sessions/${sessionId}/messages`);
+        const response = await authenticatedGet(url);
         
         if (response.ok) {
           const data = await response.json();

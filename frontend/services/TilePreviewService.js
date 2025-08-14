@@ -13,6 +13,7 @@
  */
 
 import { getConfig } from '../utils/config.js';
+import { authenticatedGet, buildApiUrl, handleApiResponse } from '../utils/api.js';
 
 class TilePreviewService {
   constructor() {
@@ -131,16 +132,9 @@ class TilePreviewService {
         // Fetch each conversation individually using existing API
         for (const conversationId of subBatch) {
           try {
-            const url = `${getConfig().BASE_URL}/api/memory/${agentId}/memories?roomId=${encodeURIComponent(conversationId)}&limit=4&includeEmbedding=false`;
+            const url = buildApiUrl(`/api/memory/${agentId}/memories?roomId=${encodeURIComponent(conversationId)}&limit=4&includeEmbedding=false`);
             
-            const response = await fetch(url, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept': 'application/json'
-              }
-            });
+            const response = await authenticatedGet(url);
 
             if (response.status === 429) {
               console.warn('🚨 [TilePreview] Rate limited! Enabling cooldown');

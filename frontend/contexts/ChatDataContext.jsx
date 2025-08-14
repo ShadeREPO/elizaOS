@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { getConfig } from '../utils/config.js';
+import { authenticatedGet, buildApiUrl, handleApiResponse } from '../utils/api.js';
 
 /**
  * ChatData Context - Lazy Loading Architecture
@@ -49,16 +50,9 @@ export const ChatDataProvider = ({
     setError(null);
     
     try {
-      const response = await fetch(`${getConfig().BASE_URL}/api/memories/${agentId}/conversations`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch conversations: ${response.status} - ${response.statusText}`);
-      }
-
-      const data = await response.json();
+      const url = buildApiUrl(`/api/memories/${agentId}/conversations`);
+      const response = await authenticatedGet(url);
+      const data = await handleApiResponse(response, 'Fetch conversations');
       const conversations = data.conversations || [];
       
       setConversationList(conversations);
@@ -88,19 +82,9 @@ export const ChatDataProvider = ({
     }
 
     try {
-      const response = await fetch(
-        `${getConfig().BASE_URL}/api/memories/${agentId}/conversation/${conversationId}?limit=${limit}&offset=${offset}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch conversation messages: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const url = buildApiUrl(`/api/memories/${agentId}/conversation/${conversationId}?limit=${limit}&offset=${offset}`);
+      const response = await authenticatedGet(url);
+      const data = await handleApiResponse(response, 'Fetch conversation messages');
       const messages = data.memories || [];
       
       // Cache the result
@@ -129,19 +113,9 @@ export const ChatDataProvider = ({
    */
   const searchConversations = useCallback(async (query, limit = 20) => {
     try {
-      const response = await fetch(
-        `${getConfig().BASE_URL}/api/memories/${agentId}/search?q=${encodeURIComponent(query)}&limit=${limit}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const url = buildApiUrl(`/api/memories/${agentId}/search?q=${encodeURIComponent(query)}&limit=${limit}`);
+      const response = await authenticatedGet(url);
+      const data = await handleApiResponse(response, 'Search conversations');
       console.log(`🔍 [ChatData] Search "${query}" returned ${data.results?.length || 0} results`);
       return data.results || [];
       
