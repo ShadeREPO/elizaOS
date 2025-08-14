@@ -242,6 +242,21 @@ const plugin: Plugin = {
         });
       },
     },
+    {
+      name: 'health',
+      path: '/health',
+      type: 'GET',
+      handler: async (_req: any, res: any) => {
+        // Health check endpoint for Railway and other hosting platforms
+        res.json({
+          status: 'ok',
+          timestamp: new Date().toISOString(),
+          service: 'ElizaOS',
+          version: '1.0.0',
+          uptime: process.uptime()
+        });
+      },
+    },
   ],
   events: {
     MESSAGE_RECEIVED: [
