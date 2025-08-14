@@ -8,7 +8,6 @@ import { type Character } from '@elizaos/core';
  */
 export const character: Character = {
   name: 'Eliza',
-  clients: ['direct'], // Enable web UI and /chat endpoint
   plugins: [
     // Core plugins first
     '@elizaos/plugin-sql',
