@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { getConfig } from '../utils/config.js';
 import { 
   SPRITE_ANIMATION_CONFIG, 
   CAT_STATES, 
@@ -111,7 +112,9 @@ const CatDisplay = ({ onConnectionChange = null, onThemeChange, initialTheme }) 
   useEffect(() => {
     const connectWebSocket = () => {
       try {
-        websocket.current = new WebSocket('ws://localhost:8080');
+        // Use WebSocket URL derived from API URL (convert http to ws)
+        const wsUrl = getConfig().BASE_URL.replace('http://', 'ws://').replace('https://', 'wss://');
+        websocket.current = new WebSocket(`${wsUrl}/ws`);
         
         websocket.current.onopen = () => {
         console.log('🔗 Connected to AI agent');

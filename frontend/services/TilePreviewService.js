@@ -12,6 +12,8 @@
  * - Request deduplication
  */
 
+import { getConfig } from '../utils/config.js';
+
 class TilePreviewService {
   constructor() {
     this.cache = new Map(); // conversationId -> { data, timestamp, ttl }
@@ -129,7 +131,7 @@ class TilePreviewService {
         // Fetch each conversation individually using existing API
         for (const conversationId of subBatch) {
           try {
-            const url = `http://localhost:3000/api/memory/${agentId}/memories?roomId=${encodeURIComponent(conversationId)}&limit=4&includeEmbedding=false`;
+            const url = `${getConfig().BASE_URL}/api/memory/${agentId}/memories?roomId=${encodeURIComponent(conversationId)}&limit=4&includeEmbedding=false`;
             
             const response = await fetch(url, {
               method: 'GET',

@@ -15,7 +15,7 @@
 const DEFAULT_CONFIG = {
   // API Configuration  
   BASE_URL: import.meta.env.MODE === 'production' 
-    ? (import.meta.env.VITE_API_URL || 'https://your-elizaos-api.railway.app') // Production API URL
+    ? (import.meta.env.VITE_API_URL || 'https://elizaos-api.railway.app') // Production API URL
     : 'http://localhost:3000',
     
   // Production API Key (required for production)

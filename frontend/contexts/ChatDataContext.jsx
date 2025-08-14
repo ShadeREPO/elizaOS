@@ -49,7 +49,7 @@ export const ChatDataProvider = ({
     setError(null);
     
     try {
-      const response = await fetch(`http://localhost:3000/api/memories/${agentId}/conversations`, {
+      const response = await fetch(`${getConfig().BASE_URL}/api/memories/${agentId}/conversations`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -89,7 +89,7 @@ export const ChatDataProvider = ({
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/memories/${agentId}/conversation/${conversationId}?limit=${limit}&offset=${offset}`,
+        `${getConfig().BASE_URL}/api/memories/${agentId}/conversation/${conversationId}?limit=${limit}&offset=${offset}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
@@ -130,7 +130,7 @@ export const ChatDataProvider = ({
   const searchConversations = useCallback(async (query, limit = 20) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/memories/${agentId}/search?q=${encodeURIComponent(query)}&limit=${limit}`,
+        `${getConfig().BASE_URL}/api/memories/${agentId}/search?q=${encodeURIComponent(query)}&limit=${limit}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }

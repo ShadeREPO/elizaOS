@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { getConfig } from '../utils/config.js';
 
 /**
  * ElizaOS Sessions API Hook - Official Implementation
@@ -27,7 +28,7 @@ function useElizaSession(agentId, userId) {
   // Thinking timeout to handle slow responses
   const thinkingTimeoutRef = useRef(null);
   
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = getConfig().BASE_URL;
   
   /**
    * Create a new session with the agent
