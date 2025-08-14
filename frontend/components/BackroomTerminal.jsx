@@ -1,0 +1,498 @@
+import { useState, useEffect, useRef } from 'react';
+import { useElizaMemoriesContext } from '../contexts/ElizaMemoriesContext.jsx';
+import './BackroomTerminal.css';
+import { MonitorIcon, GlobeIcon, PlayIcon, PauseIcon, RefreshIcon, ArrowUpIcon, DownloadIcon, StatusCircle, BugIcon } from './icons/Icons.jsx';
+
+/**
+ * BackroomTerminal Component - Live Agent Memory Feed
+ * 
+ * Creates a "backroom terminal" surveillance-style view of all agent conversations.
+ * Shows real-time memories from ElizaOS with a terminal aesthetic.
+ * 
+ * Features:
+ * - Live feed of agent memories from ElizaOS API
+ * - Terminal-style scrolling output
+ * - Real-time updates with auto-scroll
+ * - Filter by user/agent messages
+ * - Search through memory content
+ * - Export terminal logs
+ * - Backroom surveillance aesthetic
+ */
+const BackroomTerminal = ({ theme = 'dark' }) => {
+  // ElizaOS Memories Context (shared across all components)
+  const {
+    memories,
+    totalMemories,
+    lastUpdated,
+    conversations,
+    selectedConversation,
+    loading: memoriesLoading,
+    error: memoriesError,
+    realTimeEnabled,
+    refreshMemories,
+    toggleRealTime,
+    clearFilters,
+    selectConversation,
+    getFilteredMemories,
+    performanceMetrics,
+    isUserActive,
+    consecutiveEmptyPolls,
+    pollInterval,
+    agentId // Get agentId from context
+  } = useElizaMemoriesContext();
+  
+  // Terminal state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredMemories, setFilteredMemories] = useState([]);
+  const [typeFilter, setTypeFilter] = useState('all'); // 'all', 'user', 'agent'
+  const [autoScroll, setAutoScroll] = useState(true);
+  const [showTimestamps, setShowTimestamps] = useState(true);
+  const [showThoughts, setShowThoughts] = useState(false);
+  const [maxLines, setMaxLines] = useState(100); // Terminal buffer size
+  
+  // Refs
+  const terminalRef = useRef(null);
+  const isUserScrolling = useRef(false);
+  
+  /**
+   * Filter memories for terminal display
+   */
+  useEffect(() => {
+    // Get memories filtered by selected conversation first
+    const conversationMemories = getFilteredMemories();
+    let filtered = [...conversationMemories];
+    
+    // Search filtering
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(memory => 
+        memory.content.toLowerCase().includes(query) ||
+        memory.logNumber.toLowerCase().includes(query) ||
+        (memory.thought && memory.thought.toLowerCase().includes(query))
+      );
+    }
+    
+    // Type filtering
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(memory => memory.type === typeFilter);
+    }
+    
+    // Limit buffer size for performance
+    if (filtered.length > maxLines) {
+      filtered = filtered.slice(0, maxLines);
+    }
+    
+    setFilteredMemories(filtered);
+  }, [memories, searchQuery, typeFilter, maxLines, getFilteredMemories]);
+  
+  /**
+   * Auto-scroll terminal when new memories arrive
+   */
+  useEffect(() => {
+    if (autoScroll && !isUserScrolling.current && terminalRef.current) {
+      // New messages appear at the top, keep view pinned to top
+      terminalRef.current.scrollTop = 0;
+    }
+  }, [filteredMemories, autoScroll]);
+  
+  /**
+   * Handle terminal scroll to detect user interaction
+   */
+  const handleScroll = () => {
+    if (!terminalRef.current) return;
+    const { scrollTop } = terminalRef.current;
+    const isAtTop = scrollTop <= 10;
+    // If user scrolled away from top, disable auto-scroll
+    if (!isAtTop) {
+      isUserScrolling.current = true;
+      setAutoScroll(false);
+    } else if (isUserScrolling.current) {
+      // Re-enable when they return to the top
+      isUserScrolling.current = false;
+      setAutoScroll(true);
+    }
+  };
+  
+  /**
+   * Force scroll to bottom
+   */
+  const scrollToTop = () => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = 0;
+      setAutoScroll(true);
+      isUserScrolling.current = false;
+    }
+  };
+  
+  /**
+   * Export terminal log
+   */
+  const exportTerminalLog = () => {
+    const terminalOutput = filteredMemories.map(memory => {
+      const timestamp = showTimestamps ? 
+        `[${memory.timestamp.toLocaleTimeString('en-US', { hour12: false })}] ` : '';
+      const author = memory.type === 'agent' ? 'PURL' : 'USER';
+      const content = memory.content;
+      const thought = showThoughts && memory.thought ? ` (thinking: ${memory.thought})` : '';
+      
+      return `${timestamp}${author}: ${content}${thought}`;
+    }).join('\n');
+    
+    const header = `PURL BACKROOM TERMINAL LOG
+Export Time: ${new Date().toLocaleString()}
+Agent ID: ${agentId}
+Total Memories: ${totalMemories}
+Filtered: ${filteredMemories.length}
+Real-time: ${realTimeEnabled ? 'ENABLED' : 'DISABLED'}
+
+${'='.repeat(60)}
+
+`;
+    
+    const footer = `
+
+${'='.repeat(60)}
+Generated by Purl Agent System - purl.cat
+`;
+    
+    const fullLog = header + terminalOutput + footer;
+    
+    // Create and download file
+    const blob = new Blob([fullLog], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `purl-backroom-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  
+  /**
+   * Format memory for terminal display
+   */
+  const formatMemoryLine = (memory) => {
+    const validDate = memory?.timestamp instanceof Date && !isNaN(memory.timestamp.getTime());
+    const timestamp = showTimestamps && validDate
+      ? memory.timestamp.toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })
+      : null;
+
+    const author = memory?.type === 'agent' ? 'PURL' : 'USER';
+    const content = typeof memory?.content === 'string' ? memory.content : String(memory?.content ?? '');
+    
+    return { timestamp, author, content, memory };
+  };
+  
+  return (
+    <div className={`backroom-terminal ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
+      {/* Terminal Header */}
+      <div className="terminal-header">
+        <div className="terminal-title">
+          <span className="terminal-icon" aria-hidden>
+            <MonitorIcon size={16} />
+          </span>
+          <h2>PURL BACKROOM TERMINAL</h2>
+          <span className="agent-id">AGENT: {agentId.slice(0, 8)}...</span>
+        </div>
+        
+        <div className="terminal-status">
+          <div className={`status-indicator ${realTimeEnabled ? 'live' : 'paused'}`}>
+            <StatusCircle active={realTimeEnabled} />
+            <span aria-live="polite">{realTimeEnabled ? 'LIVE' : 'PAUSED'}</span>
+          </div>
+          
+          {lastUpdated && (
+            <span className="last-update">
+              Last: {lastUpdated.toLocaleTimeString()}
+            </span>
+          )}
+          
+          <span className="memory-count">
+            {selectedConversation ? (
+              <>
+                {filteredMemories.length} messages in conversation
+              </>
+            ) : (
+              <>
+                {filteredMemories.length}/{totalMemories} memories
+              </>
+            )}
+          </span>
+          
+          {/* Performance Metrics */}
+          <div className="performance-metrics">
+            <span className="perf-metric" title="Polling interval">
+              📡 {Math.round(pollInterval / 1000)}s
+            </span>
+            <span className="perf-metric" title="User activity status">
+              {isUserActive ? '👁️ Active' : '💤 Idle'}
+            </span>
+            <span className="perf-metric" title="Cache efficiency">
+              💾 {performanceMetrics.totalRequests > 0 ? Math.round((performanceMetrics.cacheHits / performanceMetrics.totalRequests) * 100) : 0}%
+            </span>
+            <span className="perf-metric" title="Average response time">
+              ⚡ {Math.round(performanceMetrics.averageResponseTime)}ms
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Conversation Selector */}
+      {conversations.length > 0 && (
+        <div className="conversation-selector">
+          <div className="conversation-selector-header">
+            <span className="selector-title">Recent Conversations:</span>
+            <button
+              onClick={() => selectConversation(null)}
+              className={`conversation-tab ${selectedConversation === null ? 'active' : ''}`}
+              title="View all conversations"
+            >
+              🌐 All
+            </button>
+          </div>
+          
+          <div className="conversation-tabs">
+            {conversations.slice(0, 8).map((conversation) => ( // Show max 8 recent conversations
+              <button
+                key={conversation.id}
+                onClick={() => selectConversation(conversation.id)}
+                className={`conversation-tab ${selectedConversation === conversation.id ? 'active' : ''}`}
+                title={`${conversation.preview} | ${conversation.messageCount} messages | ${conversation.logNumber}`}
+              >
+                <div className="tab-content">
+                  <div className="tab-header">
+                    <span className="tab-status">
+                      {conversation.isActive ? '🟢' : '⚫'}
+                    </span>
+                    <span className="tab-log-number">
+                      #{conversation.logNumber.split('-').pop()}
+                    </span>
+                    <span className="tab-count">
+                      {conversation.messageCount}
+                    </span>
+                  </div>
+                  <div className="tab-preview">
+                    {conversation.preview || 'No preview'}
+                  </div>
+                  <div className="tab-time">
+                    {conversation.startTime.toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+          
+          {/* Removed overflow summary per UX request */}
+        </div>
+      )}
+      
+      {/* Terminal Controls */}
+      <div className="terminal-controls">
+        <div className="control-group">
+          <input
+            type="text"
+            placeholder="Search memories..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="terminal-search"
+          />
+          
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="terminal-filter"
+          >
+            <option value="all">ALL MESSAGES</option>
+            <option value="user">USER ONLY</option>
+            <option value="agent">PURL ONLY</option>
+          </select>
+        </div>
+        
+        <div className="control-group">
+          <button
+            onClick={() => toggleRealTime(!realTimeEnabled)}
+            className={`control-btn ${realTimeEnabled ? 'active' : ''}`}
+            title="Toggle real-time updates"
+          >
+                {realTimeEnabled ? (
+                  <>
+                    <PauseIcon />&nbsp;PAUSE
+                  </>
+                ) : (
+                  <>
+                    <PlayIcon />&nbsp;LIVE
+                  </>
+                )}
+          </button>
+          
+          <button
+            onClick={refreshMemories}
+            className="control-btn"
+            disabled={memoriesLoading}
+            title="Refresh memories"
+          >
+            <RefreshIcon />&nbsp;REFRESH
+          </button>
+          
+          <button
+            onClick={scrollToTop}
+            className="control-btn"
+            title="Scroll to top"
+          >
+            <ArrowUpIcon />&nbsp;TOP
+          </button>
+          
+          <button
+            onClick={exportTerminalLog}
+            className="control-btn"
+            title="Export terminal log"
+          >
+            <DownloadIcon />&nbsp;EXPORT
+          </button>
+        </div>
+        
+        <div className="control-group">
+          <label className="control-checkbox">
+            <input
+              type="checkbox"
+              checked={showTimestamps}
+              onChange={(e) => setShowTimestamps(e.target.checked)}
+            />
+            <span>Timestamps</span>
+          </label>
+          
+          <label className="control-checkbox">
+            <input
+              type="checkbox"
+              checked={showThoughts}
+              onChange={(e) => setShowThoughts(e.target.checked)}
+            />
+            <span>Thoughts</span>
+          </label>
+          
+          <label className="control-checkbox">
+            <input
+              type="checkbox"
+              checked={autoScroll}
+              onChange={(e) => setAutoScroll(e.target.checked)}
+            />
+            <span>Auto-scroll</span>
+          </label>
+        </div>
+      </div>
+      
+      {/* Terminal Output */}
+      <div 
+        ref={terminalRef}
+        className="terminal-output"
+        onScroll={handleScroll}
+      >
+        {/* Loading State */}
+        {memoriesLoading && (
+          <div className="terminal-line loading">
+            <span className="terminal-prompt">SYSTEM:</span>
+            <span className="terminal-content">Loading memories...</span>
+          </div>
+        )}
+        
+        {/* Error State */}
+        {memoriesError && (
+          <div className="terminal-line error">
+            <span className="terminal-prompt">ERROR:</span>
+            <span className="terminal-content">{memoriesError}</span>
+          </div>
+        )}
+        
+        {/* Memory Lines grouped by conversation to visually separate chats */}
+        {!memoriesLoading && !memoriesError && (() => {
+          const groups = new Map();
+          filteredMemories.forEach((m) => {
+            const convId = m.roomId || m.channelId || 'unknown';
+            if (!groups.has(convId)) groups.set(convId, []);
+            groups.get(convId).push(m);
+          });
+
+          const sections = [];
+          let colorIndex = 0;
+          groups.forEach((messages, convId) => {
+            const firstMsg = messages[messages.length - 1]; // earliest
+            const lastMsg = messages[0]; // latest
+            const firstTime = firstMsg?.timestamp ? new Date(firstMsg.timestamp).toLocaleTimeString() : '';
+            const lastTime = lastMsg?.timestamp ? new Date(lastMsg.timestamp).toLocaleTimeString() : '';
+
+            sections.push(
+              <div key={`group-${convId}`} className={`conversation-group color-${colorIndex % 6}`}>
+                <div className="conversation-header">
+                  <span className="conversation-chip">Conversation</span>
+                  <span className="conversation-id">{convId}</span>
+                  <span className="conversation-time">{firstTime} – {lastTime}</span>
+                </div>
+                {messages.map((memory) => {
+                  const { timestamp, author, content } = formatMemoryLine(memory);
+                  if (!memory || !memory.id) return null;
+                  return (
+                    <div
+                      key={memory.id}
+                      className={`terminal-line ${memory.type}-line`}
+                      title={`Log: ${memory.logNumber} | Source: ${memory.source}`}
+                    >
+                      {timestamp && <span className="terminal-timestamp">[{timestamp}]</span>}
+                      <span className={`terminal-prompt ${memory.type}-prompt`}>{author}:</span>
+                      <span className="terminal-content">{content}</span>
+                      {showThoughts && memory.thought && (
+                        <span className="terminal-thought"> (thinking: {memory.thought})</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+            colorIndex += 1;
+          });
+          return sections;
+        })()}
+        
+        {/* Empty State */}
+        {!memoriesLoading && !memoriesError && filteredMemories.length === 0 && (
+          <div className="terminal-line empty">
+            <span className="terminal-prompt">SYSTEM:</span>
+            <span className="terminal-content">
+              {searchQuery || typeFilter !== 'all' 
+                ? 'No memories match current filters' 
+                : 'No memories found. Start chatting to populate the backroom feed.'}
+            </span>
+          </div>
+        )}
+        
+        {/* Auto-scroll indicator */}
+        {!autoScroll && (
+          <div className="scroll-indicator">
+            <button onClick={scrollToTop} className="scroll-to-bottom">
+              ↑ New messages above ↑
+            </button>
+          </div>
+        )}
+      </div>
+      
+      {/* Terminal Footer */}
+      <div className="terminal-footer">
+        <span className="footer-info">
+          Backroom Terminal - Monitoring Agent {agentId.slice(0, 8)}... | 
+          {realTimeEnabled ? ' LIVE FEED' : ' STATIC VIEW'} | 
+          Press CTRL+C to interrupt
+        </span>
+      </div>
+    </div>
+  );
+};
+
+export default BackroomTerminal;

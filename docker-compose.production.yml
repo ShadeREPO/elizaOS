@@ -1,0 +1,117 @@
+# Production Docker Compose for ElizaOS
+# Includes database, API server, and Redis for caching
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: elizaos-db
+    environment:
+      POSTGRES_DB: elizaos
+      POSTGRES_USER: elizaos
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change-this-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elizaos -d elizaos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: elizaos-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-change-this-password}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ElizaOS API Server (No Dashboard)
+  elizaos-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: elizaos-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Database
+      DATABASE_URL: postgresql://elizaos:${DB_PASSWORD:-change-this-password}@postgres:5432/elizaos
+      
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD:-change-this-password}@redis:6379
+      
+      # Security
+      API_KEY: ${API_KEY}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      
+      # AI Providers
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      
+      # Production settings
+      NODE_ENV: production
+      LOG_LEVEL: warn
+      DISABLE_DASHBOARD: true
+      API_ONLY_MODE: true
+      
+      # Rate limiting
+      RATE_LIMIT_WINDOW_MS: 900000
+      RATE_LIMIT_MAX_REQUESTS: 100
+    ports:
+      - "3000:3000"
+    volumes:
+      - elizaos_logs:/app/logs
+      - elizaos_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Nginx Reverse Proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: elizaos-proxy
+    depends_on:
+      - elizaos-api
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  elizaos_logs:
+    driver: local
+  elizaos_data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    
+    /* Cypress specific */
+    "types": ["cypress", "node", "mocha"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    
+    /* Allow JavaScript files */
+    "allowJs": true,
+    
+    /* Path mapping */
+    "baseUrl": "../../..",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@elizaos/core": ["../../../../core/src"],
+      "@elizaos/core/*": ["../../../../core/src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.cy.ts",
+    "**/*.cy.tsx",
+    "**/*.cy.js",
+    "**/*.cy.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

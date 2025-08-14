@@ -1,0 +1,889 @@
+/* AgentChatSocket.css - Socket.IO Real-time Chat Styles */
+
+/* The main chat container inherits from About.jsx structure */
+/* We only need to style the chat-specific elements */
+
+/* Socket.IO specific chat box styling */
+.chat-box.socket-chat {
+  background: var(--bg-secondary, #1a1a1a);
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.1);
+  backdrop-filter: blur(8px);
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Dark theme socket chat */
+.about-page.dark .chat-box.socket-chat {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 136, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Light theme socket chat */
+.about-page.light .chat-box.socket-chat {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  box-shadow: 
+    0 0 20px rgba(40, 167, 69, 0.2),
+    inset 0 1px 0 rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+/* Enhanced status indicators for Socket.IO */
+.status-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.connected {
+  background: rgba(0, 255, 136, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  color: #00ff88;
+}
+
+.status-indicator.disconnected {
+  background: rgba(255, 69, 58, 0.2);
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  color: #ff453a;
+}
+
+.status-indicator.realtime {
+  background: rgba(255, 149, 0, 0.2);
+  border: 1px solid rgba(255, 149, 0, 0.4);
+  color: #ff9500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-dot.animate-pulse {
+  animation: socketPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes socketPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+/* Session info styling */
+.session-info {
+  padding: 4px 8px;
+  background: rgba(100, 100, 100, 0.2);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  color: var(--text-secondary, #888);
+}
+
+/* Enhanced chat controls for Socket.IO */
+.chat-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.control-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.control-button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.control-button:hover:before {
+  left: 100%;
+}
+
+.control-button.primary {
+  background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  color: #000;
+}
+
+.control-button.primary:hover {
+  background: linear-gradient(135deg, #00cc6a 0%, #00a855 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.control-button.secondary {
+  background: rgba(100, 100, 100, 0.3);
+  color: var(--text-primary, #fff);
+  border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+.control-button.secondary:hover {
+  background: rgba(100, 100, 100, 0.5);
+  transform: translateY(-2px);
+}
+
+.control-button.success {
+  background: linear-gradient(135deg, #34c759 0%, #28a745 100%);
+  color: #fff;
+}
+
+.control-button.success:hover {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+}
+
+.control-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Enhanced message styling for Socket.IO */
+.messages-container {
+  min-height: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.about-page.light .messages-container {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure messages list doesn't overflow */
+.messages-list {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for Socket.IO chat */
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00ff88 0%, #00cc6a 100%);
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00cc6a 0%, #00a855 100%);
+}
+
+/* Enhanced message styling */
+.message {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  position: relative;
+  animation: messageSlideIn 0.3s ease-out;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user-message {
+  background: linear-gradient(135deg, #007aff 0%, #0051d5 100%);
+  color: #fff;
+  margin-left: 20%;
+  margin-right: 0;
+  border-bottom-right-radius: 4px;
+  max-width: 80%;
+}
+
+.message.agent-message {
+  background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  color: #000;
+  margin-right: 20%;
+  margin-left: 0;
+  border-bottom-left-radius: 4px;
+  max-width: 80%;
+}
+
+.message.system-message {
+  background: rgba(255, 149, 0, 0.2);
+  border: 1px solid rgba(255, 149, 0, 0.4);
+  color: #ff9500;
+  text-align: center;
+  margin: 8px 10%;
+  max-width: 80%;
+  font-style: italic;
+  align-self: center;
+}
+
+.message.thinking {
+  background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  animation: thinkingPulse 2s ease-in-out infinite;
+}
+
+@keyframes thinkingPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* Enhanced message header */
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.message-author {
+  opacity: 0.8;
+}
+
+.message-status {
+  font-size: 14px;
+}
+
+.message-badge {
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.message-badge.realtime {
+  background: rgba(255, 149, 0, 0.3);
+  color: #ff9500;
+  animation: realtimeBadge 2s ease-in-out infinite;
+}
+
+@keyframes realtimeBadge {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.message-badge.api {
+  background: rgba(0, 122, 255, 0.3);
+  color: #007aff;
+}
+
+/* Enhanced message content */
+.message-content {
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+/* Enhanced typing indicator for Socket.IO */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-style: italic;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: socketTypingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes socketTypingBounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Message metadata styling */
+.message-thought {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  font-size: 12px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.message-actions {
+  margin-top: 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.message-timestamp {
+  margin-top: 6px;
+  font-size: 10px;
+  opacity: 0.6;
+  text-align: right;
+}
+
+/* Enhanced input styling for Socket.IO */
+.chat-input-container {
+  border-top: none;
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.about-page.light .chat-input-container {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-input-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.message-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-primary, #fff);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.about-page.light .message-input {
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+.message-input:focus {
+  border-color: #00ff88;
+  box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.about-page.light .message-input:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.message-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.about-page.light .message-input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.message-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.send-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.send-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00cc6a 0%, #00a855 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.4);
+}
+
+.send-button:active {
+  transform: scale(0.95);
+}
+
+.send-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Enhanced empty state for Socket.IO */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary, #888);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  animation: socketGlow 3s ease-in-out infinite;
+}
+
+/* ASCII Cat component styles */
+.ascii-cat-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.ascii-cat-display {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: pre;
+  color: var(--text-primary, #333);
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Size variants */
+.ascii-cat-small .ascii-cat-display {
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.ascii-cat-medium .ascii-cat-display {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.ascii-cat-large .ascii-cat-display {
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+/* Dark theme adjustments */
+.dark .ascii-cat-display {
+  color: var(--text-primary-dark, #e0e0e0);
+}
+
+/* Light theme adjustments */
+.light .ascii-cat-display {
+  color: var(--text-primary-light, #333);
+}
+
+@keyframes socketGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary, #fff);
+}
+
+.empty-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.empty-status {
+  font-size: 12px;
+  font-style: italic;
+  color: #00ff88;
+}
+
+/* Enhanced status grid for Socket.IO */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.status-item {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.about-page.light .status-item {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+.status-item:hover {
+  border-color: #00ff88;
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.about-page.light .status-item:hover {
+  border-color: #28a745;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.status-name {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #888);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-desc {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+}
+
+/* Enhanced error and success messages */
+.error-message, .success-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+.error-message {
+  background: rgba(255, 69, 58, 0.2);
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  color: #ff453a;
+}
+
+.success-message {
+  background: rgba(0, 255, 136, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  color: #00ff88;
+}
+
+.error-icon, .success-icon {
+  font-size: 18px;
+}
+
+.error-text, .success-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Enhanced debug section */
+.debug-section {
+  margin-top: 16px;
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.debug-toggle {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #888);
+  user-select: none;
+}
+
+.debug-toggle:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.debug-content {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.1);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  color: var(--text-secondary, #888);
+}
+
+/* Responsive design for Socket.IO chat */
+@media (max-width: 768px) {
+  .chat-box.socket-chat {
+    border-radius: 8px;
+    border-width: 1px;
+  }
+  
+  .messages-container {
+    padding: 16px 12px;
+    min-height: 300px;
+    max-height: 60vh;
+  }
+  
+  .status-indicators {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .status-indicator {
+    justify-content: center;
+  }
+  
+  .chat-controls {
+    flex-direction: column;
+  }
+  
+  .control-button {
+    width: 100%;
+  }
+  
+  .message {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .message.user-message {
+    margin-left: 5%;
+    margin-right: 2%;
+  }
+  
+  .message.agent-message {
+    margin-right: 5%;
+    margin-left: 2%;
+  }
+  
+  .message.system-message {
+    margin: 8px 5%;
+  }
+  
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .status-item {
+    padding: 8px;
+  }
+  
+  .chat-input-container {
+    padding: 12px;
+  }
+  
+  .message-input {
+    padding: 10px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .send-button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .chat-box.socket-chat {
+    border-radius: 6px;
+  }
+  
+  .messages-container {
+    padding: 12px 8px;
+    min-height: 250px;
+    max-height: 50vh;
+  }
+  
+  .message {
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .message.user-message {
+    margin-left: 2%;
+    margin-right: 1%;
+  }
+  
+  .message.agent-message {
+    margin-right: 2%;
+    margin-left: 1%;
+  }
+  
+  .message-header {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .status-item {
+    padding: 6px;
+  }
+  
+  .status-name {
+    font-size: 10px;
+  }
+  
+  .status-desc {
+    font-size: 12px;
+  }
+  
+  .chat-input-container {
+    padding: 10px 8px;
+  }
+  
+  .message-input {
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+  
+  .send-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .empty-state {
+    padding: 20px 10px;
+  }
+  
+  .empty-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+  
+  .empty-title {
+    font-size: 16px;
+  }
+  
+  .empty-description {
+    font-size: 12px;
+  }
+}
+
+/* Animation for Socket.IO connection state */
+@keyframes socketConnect {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.chat-box.socket-chat.connected {
+  animation: socketConnect 0.5s ease-out;
+}
