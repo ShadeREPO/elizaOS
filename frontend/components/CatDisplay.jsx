@@ -112,9 +112,11 @@ const CatDisplay = ({ onConnectionChange = null, onThemeChange, initialTheme }) 
   useEffect(() => {
     const connectWebSocket = () => {
       try {
-        // Use WebSocket URL derived from API URL (convert http to ws)
-        const wsUrl = getConfig().BASE_URL.replace('http://', 'ws://').replace('https://', 'wss://');
-        websocket.current = new WebSocket(`${wsUrl}/ws`);
+        // ElizaOS uses Socket.IO, not raw WebSocket - disable this for now
+        // TODO: Replace with proper Socket.IO connection
+        console.log('🔌 WebSocket connection disabled - ElizaOS uses Socket.IO');
+        setIsConnected(false);
+        return;
         
         websocket.current.onopen = () => {
         console.log('🔗 Connected to AI agent');

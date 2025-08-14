@@ -27,4 +27,16 @@ export default defineConfig({
     jsx: 'automatic',
     jsxImportSource: 'react',
   },
+  // Fix routing for deployment
+  build: {
+    outDir: 'dist',
+    // Generate source maps for debugging
+    sourcemap: false,
+    // Optimize for production
+    minify: true,
+  },
+  // Handle SPA routing for deployment
+  preview: {
+    port: 5174,
+  },
 })
