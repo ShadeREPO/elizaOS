@@ -36,8 +36,8 @@ export const productionConfig = {
   security: {
     apiKey: process.env.API_KEY,
     requireApiKey: process.env.REQUIRE_API_KEY === 'true' || process.env.NODE_ENV === 'production',
-    disableDashboard: process.env.DISABLE_DASHBOARD === 'true' || process.env.NODE_ENV === 'production',
-    apiOnlyMode: process.env.API_ONLY_MODE === 'true' || process.env.NODE_ENV === 'production'
+    disableDashboard: process.env.DISABLE_DASHBOARD === 'false' || process.env.NODE_ENV === 'production',
+    apiOnlyMode: process.env.API_ONLY_MODE === 'false' || process.env.NODE_ENV === 'production'
   },
   
   // Logging configuration
