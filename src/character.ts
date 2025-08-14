@@ -44,7 +44,7 @@ export const character: Character = {
     server: {
       apiKey: process.env.API_KEY,
       requireApiKey: process.env.NODE_ENV === 'production',
-      disableDashboard: process.env.DISABLE_DASHBOARD === 'true' || process.env.NODE_ENV === 'production',
+      disableDashboard: process.env.DISABLE_DASHBOARD === 'true', // Only disable if explicitly set
       corsOrigins: process.env.ALLOWED_ORIGINS?.split(',') || []
     }
   },
