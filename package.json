@@ -61,6 +61,7 @@
     "start:production": "NODE_ENV=production elizaos start",
     "dev": "elizaos dev",
     "build": "tsc --noEmit && tsup",
+    "test:railway": "node test-railway-endpoints.js",
     "frontend:dev": "vite --config vite.frontend.config.ts",
     "frontend:build": "vite build --config vite.frontend.config.ts",
     "frontend:preview": "vite preview --config vite.frontend.config.ts --port 5174",
