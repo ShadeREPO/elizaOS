@@ -18,7 +18,7 @@ const About = ({ theme = 'light' }) => {
         <header className="about-header">
           <div className="about-logo">
             <img 
-              src="/assets/logo_web.png" 
+              src="/logo_web.png" 
               alt="Purl Logo" 
               className="about-logo-image"
             />

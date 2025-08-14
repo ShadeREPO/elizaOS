@@ -126,7 +126,7 @@ const Docs = ({ theme = 'dark' }) => {
           <div className="sidebar-header">
             <Link to="/" className="brand-link">
               <img 
-                src="/assets/logo_web.png" 
+                src="/logo_web.png" 
                 alt="Purl Logo" 
                 className="sidebar-logo"
               />

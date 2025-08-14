@@ -123,7 +123,7 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
         <div className="header-brand">
           <Link to="/" className="brand-logo">
             <img 
-              src="/assets/logo_web.png" 
+              src="/logo_web.png" 
               alt="Purl Logo" 
               className="logo-image"
             />

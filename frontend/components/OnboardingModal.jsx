@@ -328,7 +328,7 @@ const OnboardingModal = ({ theme = 'dark' }) => {
               gap: '1rem'
             }}>
               <img 
-                src="/assets/logo_web.png" 
+                src="/logo_web.png" 
                 alt="Purl Logo" 
                 style={{
                   width: '32px',
