@@ -145,34 +145,26 @@ const useAgentThoughts = () => {
         headers['X-API-Key'] = config.API_KEY;
       }
 
-      // Request thought from Eliza agent
-      const response = await fetch(`${config.BASE_URL}/api/chat/${agentId}`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          message: contextPrompt,
-          roomId: 'thoughts-internal',
-          internal: true // Mark as internal thought request
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Agent thought request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
+      // Disable API-based thoughts for now since endpoint doesn't exist
+      // TODO: Replace with proper ElizaOS messaging API
+      console.log('🧠 [AgentThoughts] API endpoint disabled - using fallback thoughts');
       
-      // Extract the thought from the agent's response
-      let agentThought = data.message || data.response || data.text || "Hmm, pondering this situation...";
+      // Use simple fallback instead of non-existent endpoint
+      const fallbackThoughts = [
+        "Watching the conversation flow...",
+        "Processing new information...",
+        "Observing user interactions...",
+        "Analyzing chat patterns...",
+        "Monitoring system activity...",
+        "Thinking about responses...",
+        "Computing contextual data...",
+        "Evaluating conversation depth..."
+      ];
       
-      // Clean up the response (remove quotes, limit length)
-      agentThought = agentThought.replace(/^["']|["']$/g, '').trim();
-      if (agentThought.length > 80) {
-        agentThought = agentThought.substring(0, 77) + '...';
-      }
-
+      const randomThought = fallbackThoughts[Math.floor(Math.random() * fallbackThoughts.length)];
+      
       // Track this thought to prevent immediate repetition
-      recentThoughts.current.add(agentThought.toLowerCase());
+      recentThoughts.current.add(randomThought.toLowerCase());
       
       // Clean up old thoughts (keep only last 10)
       if (recentThoughts.current.size > 10) {
@@ -180,7 +172,7 @@ const useAgentThoughts = () => {
         recentThoughts.current = new Set(thoughtsArray.slice(-10));
       }
 
-      return agentThought;
+      return randomThought;
 
     } catch (error) {
       console.error('❌ [AgentThoughts] Failed to get thought from agent:', error);

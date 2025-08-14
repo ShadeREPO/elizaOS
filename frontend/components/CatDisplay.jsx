@@ -118,62 +118,6 @@ const CatDisplay = ({ onConnectionChange = null, onThemeChange, initialTheme }) 
         setIsConnected(false);
         return;
         
-        websocket.current.onopen = () => {
-        console.log('🔗 Connected to AI agent');
-        setIsConnected(true);
-        if (onConnectionChange) {
-          onConnectionChange(true);
-        }
-      };
-        
-        websocket.current.onmessage = (event) => {
-          const command = event.data.toLowerCase().trim();
-          console.log('📨 Received command:', command);
-          
-          // Map commands to states
-          const commandMap = {
-            'walk': CAT_STATES.WALKING,
-            'jump': CAT_STATES.JUMPING,
-            'eat': CAT_STATES.EATING,
-            'sleep': CAT_STATES.SLEEPING,
-            'sit': CAT_STATES.SITTING
-          };
-          
-          if (commandMap[command]) {
-            const newState = commandMap[command];
-            setCurrentState(newState);
-            
-            // Generate WebSocket command reaction using thoughts system
-            const commandReactions = [
-              `Received ${command} command! Let me ${command} for you`,
-              `WebSocket says: ${command}! On it!`,
-              `AI agent wants me to ${command} - roger that!`,
-              `Command received: ${command}. Executing now!`,
-              `Time to ${command}! Thanks for the direction`
-            ];
-            const randomReaction = commandReactions[Math.floor(Math.random() * commandReactions.length)];
-            triggerThought(randomReaction, 1200);
-          }
-        };
-        
-        websocket.current.onclose = () => {
-          console.log('🔌 Disconnected from AI agent');
-          setIsConnected(false);
-          if (onConnectionChange) {
-            onConnectionChange(false);
-          }
-          // Attempt to reconnect after 3 seconds
-          setTimeout(connectWebSocket, 3000);
-        };
-        
-        websocket.current.onerror = (error) => {
-          console.log('❌ WebSocket error:', error);
-          setIsConnected(false);
-          if (onConnectionChange) {
-            onConnectionChange(false);
-          }
-        };
-        
       } catch (error) {
         console.log('🚫 WebSocket connection failed:', error);
         setIsConnected(false);
