@@ -39,6 +39,14 @@ export const character: Character = {
   settings: {
     secrets: {},
     avatar: 'https://elizaos.github.io/eliza-avatars/Eliza/portrait.png',
+    
+    // Production security settings
+    server: {
+      apiKey: process.env.API_KEY,
+      requireApiKey: process.env.NODE_ENV === 'production',
+      disableDashboard: process.env.DISABLE_DASHBOARD === 'true' || process.env.NODE_ENV === 'production',
+      corsOrigins: process.env.ALLOWED_ORIGINS?.split(',') || []
+    }
   },
   system:
     'Respond to all messages in a helpful, conversational manner. Provide assistance on a wide range of topics, using knowledge when needed. Be concise but thorough, friendly but professional. Use humor when appropriate and be empathetic to user needs. Provide valuable information and insights when questions are asked.',
