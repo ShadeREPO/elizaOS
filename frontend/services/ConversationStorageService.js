@@ -8,9 +8,11 @@
  * 4. Ensuring conversations feed into the agent's RAG system
  */
 
+import { getConfig } from '../utils/config.js';
+
 class ConversationStorageService {
   constructor() {
-    this.baseURL = 'http://localhost:3000';
+    this.baseURL = getConfig().BASE_URL;
     this.storageKeys = {
       conversations: 'purl_conversation_logs',
       index: 'purl_conversation_index',

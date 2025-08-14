@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
+import { getConfig } from '../utils/config.js';
 
 /**
  * ElizaOS Socket.IO Hook - Real-time WebSocket Implementation
@@ -44,7 +45,7 @@ function useElizaSocketIO(agentId, userId) {
   // Rate limiting
   const lastMessageTime = useRef(0);
   
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = getConfig().BASE_URL;
   
   /**
    * Generate UUID helper function

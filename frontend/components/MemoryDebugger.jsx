@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getConfig } from '../utils/config.js';
 
 /**
  * MemoryDebugger - Test component to debug ElizaOS Memory API
@@ -12,7 +13,7 @@ const MemoryDebugger = () => {
   const [error, setError] = useState(null);
   
   const AGENT_ID = 'b850bc30-45f8-0041-a00a-83df46d8555d';
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = getConfig().BASE_URL;
   
   const testMemoryAPI = async () => {
     setIsLoading(true);

@@ -59,7 +59,7 @@ class SocketConnectionManager {
   }
   
   async createConnection(agentId, userId, options) {
-    const { baseURL = 'http://localhost:3000', roomId } = options;
+    const { baseURL = getConfig().BASE_URL, roomId } = options;
     
     const socket = io(baseURL, {
       // OPTIMIZATION: Streamlined connection options
