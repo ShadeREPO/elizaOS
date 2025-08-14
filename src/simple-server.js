@@ -1,24 +1,18 @@
-import * as express from 'express';
-import * as helmet from 'helmet';
-import * as rateLimit from 'express-rate-limit';
-import * as cors from 'cors';
+const express = require('express');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 
 // Simple logger for production server
 const logger = {
-  info: (message: string) => console.log(`[INFO] ${new Date().toISOString()} ${message}`),
-  warn: (message: string) => console.warn(`[WARN] ${new Date().toISOString()} ${message}`),
-  error: (message: string, error?: any) => console.error(`[ERROR] ${new Date().toISOString()} ${message}`, error || '')
+  info: (message) => console.log(`[INFO] ${new Date().toISOString()} ${message}`),
+  warn: (message) => console.warn(`[WARN] ${new Date().toISOString()} ${message}`),
+  error: (message, error) => console.error(`[ERROR] ${new Date().toISOString()} ${message}`, error || '')
 };
 
 /**
  * Production ElizaOS Server - API Only (No Dashboard)
- * 
- * This server configuration is designed for production deployment where:
- * - Dashboard access is completely disabled
- * - API access requires authentication via API key
- * - Rate limiting is enforced
- * - CORS is restricted to authorized origins only
- * - Security headers are enabled
+ * Simple JavaScript version for easier deployment
  */
 
 const app = express();
@@ -26,18 +20,17 @@ const app = express();
 // Parse JSON bodies
 app.use(express.json({ limit: '10mb' }));
 
-// Security middleware - Helmet for security headers
+// Security middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Allow API responses
+  contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// CORS Configuration - Only allow authorized origins
+// CORS Configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.includes(origin)) {
@@ -52,8 +45,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'X-API-Key', 'Accept', 'Accept-Encoding']
 }));
 
-// Rate limiting - Protect against abuse
-const createRateLimiter = (windowMs: number, max: number, message: string) => {
+// Rate limiting
+const createRateLimiter = (windowMs, max, message) => {
   return rateLimit({
     windowMs,
     max,
@@ -71,7 +64,7 @@ const createRateLimiter = (windowMs: number, max: number, message: string) => {
   });
 };
 
-// Different rate limits for different endpoints
+// Rate limiters
 const generalLimiter = createRateLimiter(
   parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
   parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
@@ -84,12 +77,11 @@ const apiLimiter = createRateLimiter(
   'API rate limit exceeded'
 );
 
-// Apply general rate limiting to all routes
 app.use(generalLimiter);
 
 // API Key authentication middleware
-const requireAPIKey = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const apiKey = req.headers['x-api-key'] as string;
+const requireAPIKey = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.API_KEY;
   
   // Skip auth in development if no API key is set
@@ -122,23 +114,13 @@ app.get('/health', (req, res) => {
 app.use('/api', requireAPIKey);
 app.use('/api', apiLimiter);
 
-// Import and mount ElizaOS API routes
-// Note: This assumes ElizaOS exports API routes separately from dashboard
-// You may need to modify this based on ElizaOS's actual export structure
-try {
-  // Import your ElizaOS API setup here
-  // This is a placeholder - replace with actual ElizaOS API mounting
-  app.use('/api', (req, res, next) => {
-    // Mount your ElizaOS API routes here
-    // Example: app.use('/api', elizaAPIRouter);
-    res.status(501).json({ 
-      error: 'API routes not implemented',
-      message: 'Please configure ElizaOS API routes in production-server.ts'
-    });
+// Placeholder API routes (replace with actual ElizaOS integration)
+app.use('/api', (req, res, next) => {
+  res.status(501).json({ 
+    error: 'API routes not implemented',
+    message: 'Please configure ElizaOS API routes. This is a placeholder production server.'
   });
-} catch (error) {
-  logger.error('Failed to load ElizaOS API routes:', error);
-}
+});
 
 // Block dashboard routes explicitly
 const dashboardRoutes = ['/', '/dashboard', '/agents', '/settings', '/logs'];
@@ -162,7 +144,7 @@ app.use('*', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err, req, res, next) => {
   logger.error('Server error:', err.message || err);
   
   // Don't leak error details in production
@@ -186,4 +168,4 @@ app.listen(PORT, () => {
   logger.info(`⚡ Rate Limit: ${process.env.RATE_LIMIT_MAX_REQUESTS || 100} requests per ${(parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000')) / 60000} minutes`);
 });
 
-export default app;
+module.exports = app;

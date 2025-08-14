@@ -14,12 +14,12 @@
 // Default configuration values
 const DEFAULT_CONFIG = {
   // API Configuration  
-  BASE_URL: process.env.NODE_ENV === 'production' 
-    ? (process.env.REACT_APP_API_URL || 'https://your-elizaos-api.railway.app') // Production API URL
+  BASE_URL: import.meta.env.MODE === 'production' 
+    ? (import.meta.env.VITE_API_URL || 'https://your-elizaos-api.railway.app') // Production API URL
     : 'http://localhost:3000',
     
   // Production API Key (required for production)
-  API_KEY: process.env.REACT_APP_API_KEY || null,
+  API_KEY: import.meta.env.VITE_API_KEY || null,
   
   // Rate Limiting & Performance - EMERGENCY CONSERVATIVE SETTINGS
   MEMORIES_POLL_INTERVAL: 60000, // 60 seconds (VERY conservative for rate limit protection)
@@ -66,7 +66,7 @@ let currentConfig = { ...DEFAULT_CONFIG };
  * Get current environment
  */
 function getEnvironment() {
-  return process.env.NODE_ENV || 'development';
+  return import.meta.env.MODE || 'development';
 }
 
 /**

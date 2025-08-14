@@ -260,9 +260,9 @@ const config = {
 
 **Frontend Environment Variables:**
 ```bash
-# Vercel/Netlify environment
-REACT_APP_API_KEY=your-secure-api-key-here
-REACT_APP_API_URL=https://your-elizaos-api.railway.app
+# Vercel/Netlify environment (for Vite)
+VITE_API_KEY=your-secure-api-key-here
+VITE_API_URL=https://your-elizaos-api.railway.app
 ```
 
 ## 🔐 Security Headers for API Requests
