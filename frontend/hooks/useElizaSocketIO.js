@@ -114,6 +114,50 @@ function useElizaSocketIO(agentId, userId) {
       
       socket.emit('message', joinPayload);
       console.log('✅ [Socket.IO] Join message emitted via "message" event');
+      
+      // CRITICAL: Add agent to channel immediately when connection is established
+      // This ensures the agent is ready to receive messages from the start
+      setTimeout(async () => {
+        try {
+          console.log('🤖 [Socket.IO] Adding agent to channel proactively...');
+          
+          // Try to add agent to the session ID (which might be the channel ID)
+          const addAgentResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${roomId.current}/agents`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-API-Key': getConfig().API_KEY || ''
+            },
+            body: JSON.stringify({
+              agentId: agentId
+            })
+          });
+          
+          if (addAgentResponse.ok) {
+            console.log('✅ [Socket.IO] Successfully added agent to channel proactively');
+            
+            // Verify the agent was added by checking channel participants
+            try {
+              const participantsResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${roomId.current}/participants`, {
+                headers: { 
+                  'X-API-Key': getConfig().API_KEY || ''
+                }
+              });
+              
+              if (participantsResponse.ok) {
+                const participants = await participantsResponse.json();
+                console.log('📋 [Socket.IO] Channel participants after proactive addition:', participants);
+              }
+            } catch (verifyErr) {
+              console.log('⚠️ [Socket.IO] Could not verify participants:', verifyErr.message);
+            }
+          } else {
+            console.log('⚠️ [Socket.IO] Could not add agent proactively yet, will retry on first message');
+          }
+        } catch (err) {
+          console.log('⚠️ [Socket.IO] Error adding agent proactively:', err.message);
+        }
+      }, 1000); // Small delay to ensure room join is processed first
     });
     
     // Transport upgrade (polling -> websocket)
@@ -162,6 +206,39 @@ function useElizaSocketIO(agentId, userId) {
     socket.on(SOCKET_EVENTS.MESSAGE_BROADCAST, (data) => {
       console.log('🎉 [Socket.IO] *** RECEIVED messageBroadcast EVENT ***');
       console.log('📨 [Socket.IO] Full broadcast data:', JSON.stringify(data, null, 2));
+      
+      // Check if this is a channel creation event or contains channel information
+      if (data.channelId && data.channelId !== roomId.current) {
+        console.log('🎯 [Socket.IO] Detected new channel ID:', data.channelId);
+        
+        // Try to add agent to the new channel
+        setTimeout(async () => {
+          try {
+            console.log('🤖 [Socket.IO] Adding agent to newly detected channel:', data.channelId);
+            
+            const addAgentResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${data.channelId}/agents`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'X-API-Key': getConfig().API_KEY || ''
+              },
+              body: JSON.stringify({
+                agentId: agentId
+              })
+            });
+            
+            if (addAgentResponse.ok) {
+              console.log('✅ [Socket.IO] Successfully added agent to newly detected channel');
+              // Update room ID to the new channel
+              roomId.current = data.channelId;
+            } else {
+              console.log('⚠️ [Socket.IO] Failed to add agent to newly detected channel');
+            }
+          } catch (err) {
+            console.log('⚠️ [Socket.IO] Error adding agent to newly detected channel:', err.message);
+          }
+        }, 1000);
+      }
       
       // First, check if this is an agent response regardless of room
       const isFromAgent = (
@@ -304,6 +381,55 @@ function useElizaSocketIO(agentId, userId) {
       console.log('⏰ [Socket.IO Debug] If you see this without any messageBroadcast events above,');
       console.log('   then the issue is: NOT RECEIVING messageBroadcast events at all');
       console.log('   Check: 1) Are we joined to the correct room? 2) Is the agent active in this room?');
+      
+      // If no messages received, try to re-add agent to channel via API
+      if (socket.connected && roomId.current) {
+        console.log('🔄 [Socket.IO Debug] No messages received, retrying agent addition to channel...');
+        
+        // Retry adding agent to channel via API
+        fetch(`${BASE_URL}/api/messaging/central-channels/${roomId.current}/agents`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-API-Key': getConfig().API_KEY || ''
+          },
+          body: JSON.stringify({
+            agentId: agentId
+          })
+        }).then(response => {
+          if (response.ok) {
+            console.log('🔄 [Socket.IO Debug] Successfully re-added agent to channel');
+          } else {
+            console.log('🔄 [Socket.IO Debug] Failed to re-add agent to channel:', response.status);
+            
+            // If that fails, try to create a new channel
+            console.log('🔄 [Socket.IO Debug] Attempting to create new channel...');
+            fetch(`${BASE_URL}/api/messaging/central-channels`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'X-API-Key': getConfig().API_KEY || ''
+              },
+              body: JSON.stringify({
+                name: `Retry Chat ${Date.now()}`,
+                type: 'GROUP',
+                agentId: agentId,
+                userId: userId
+              })
+            }).then(createResponse => {
+              if (createResponse.ok) {
+                console.log('🔄 [Socket.IO Debug] Successfully created new channel');
+              } else {
+                console.log('🔄 [Socket.IO Debug] Failed to create new channel');
+              }
+            }).catch(createErr => {
+              console.log('🔄 [Socket.IO Debug] Error creating new channel:', createErr.message);
+            });
+          }
+        }).catch(err => {
+          console.log('🔄 [Socket.IO Debug] Error re-adding agent to channel:', err.message);
+        });
+      }
     }, 10000);
 
     
@@ -334,128 +460,200 @@ function useElizaSocketIO(agentId, userId) {
   }, [agentId, userId, generateUUID, messages]);
   
   /**
-   * Add agent to channel to ensure participation (CRITICAL FIX)
+   * Create session for agent participation (ELIZAOS SESSIONS API APPROACH)
    */
-  const addAgentToChannel = useCallback(async (channelId) => {
+  const createAgentSession = useCallback(async () => {
     try {
-      console.log(`🔧 [Socket.IO] Adding agent to channel: ${channelId}`);
+      console.log(`🔧 [Socket.IO] Creating session for agent: ${agentId}`);
       
-      // Step 1: Add agent to the central channel
-      const addAgentResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${channelId}/agents`, {
+      // Use Sessions API to create a session with agent participation metadata
+      const sessionResponse = await fetch(`${BASE_URL}/api/messaging/sessions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-API-Key': getConfig().API_KEY || ''
+        },
         body: JSON.stringify({
-          agentId: agentId
+          agentId: agentId,
+          userId: userId,
+          metadata: {
+            platform: 'web',
+            username: 'user',
+            interface: 'purl-chat-app',
+            source: 'socket-io-setup',
+            // CRITICAL: Ensure agent participation
+            ensureAgentParticipation: true,
+            agentParticipant: true,
+            autoAddAgent: true,
+            addAgentAsParticipant: true,
+            agentEntityId: agentId
+          }
         })
       });
       
-      if (addAgentResponse.ok) {
-        console.log(`✅ [Socket.IO] Successfully added agent to channel: ${channelId}`);
+      if (sessionResponse.ok) {
+        const sessionData = await sessionResponse.json();
+        const sessionId = sessionData.sessionId;
+        console.log(`✅ [Socket.IO] Successfully created session:`, sessionId);
         
-        // Step 2: Verify channel participants
+        // CRITICAL: Try to create a channel and add agent proactively
+        // This ensures the agent is ready to receive messages from the start
         try {
-          const participantsResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${channelId}/participants`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+          console.log(`🤖 [Socket.IO] Attempting to create channel and add agent proactively...`);
+          
+          // First, check if agent is already a participant
+          try {
+            const participantsResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${sessionId}/participants`, {
+              headers: { 
+                'X-API-Key': getConfig().API_KEY || ''
+              }
+            });
+            
+            if (participantsResponse.ok) {
+              const participants = await participantsResponse.json();
+              const agentIsParticipant = participants.some(p => p.agentId === agentId || p.entityId === agentId);
+              
+              if (agentIsParticipant) {
+                console.log(`✅ [Socket.IO] Agent is already a participant in channel`);
+                return sessionId;
+              }
+            }
+          } catch (checkErr) {
+            console.log(`⚠️ [Socket.IO] Could not check participants:`, checkErr.message);
+          }
+          
+          // Method 1: Try to add agent to session ID as channel
+          const addAgentResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${sessionId}/agents`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-API-Key': getConfig().API_KEY || ''
+            },
+            body: JSON.stringify({
+              agentId: agentId
+            })
           });
           
-          if (participantsResponse.ok) {
-            const participantsData = await participantsResponse.json();
-            console.log(`📋 [Socket.IO] Channel ${channelId} participants:`, participantsData);
+          if (addAgentResponse.ok) {
+            console.log(`✅ [Socket.IO] Successfully added agent to session channel proactively`);
+          } else {
+            console.log(`⚠️ [Socket.IO] Could not add agent to session channel yet (${addAgentResponse.status})`);
             
-            // Verify agent is now in participants
-            if (participantsData.includes && participantsData.includes(agentId)) {
-              console.log(`🎯 [Socket.IO] Confirmed: Agent is now participant in channel ${channelId}`);
-              return true;
-            } else if (participantsData.participants && participantsData.participants.includes(agentId)) {
-              console.log(`🎯 [Socket.IO] Confirmed: Agent is now participant in channel ${channelId}`);
-              return true;
+            // Method 2: Try to create a channel first
+            try {
+              console.log(`🤖 [Socket.IO] Attempting to create channel proactively...`);
+              
+              const createChannelResponse = await fetch(`${BASE_URL}/api/messaging/central-channels`, {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'X-API-Key': getConfig().API_KEY || ''
+                },
+                body: JSON.stringify({
+                  name: `Chat ${sessionId.substring(0, 8)}`,
+                  type: 'GROUP',
+                  agentId: agentId,
+                  userId: userId
+                })
+              });
+              
+              if (createChannelResponse.ok) {
+                const channelData = await createChannelResponse.json();
+                const channelId = channelData.channelId || channelData.id;
+                console.log(`✅ [Socket.IO] Successfully created channel proactively:`, channelId);
+                
+                // Update room ID to the new channel
+                roomId.current = channelId;
+                
+                // Now add agent to the new channel
+                const addToNewChannelResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${channelId}/agents`, {
+                  method: 'POST',
+                  headers: { 
+                    'Content-Type': 'application/json',
+                    'X-API-Key': getConfig().API_KEY || ''
+                  },
+                  body: JSON.stringify({
+                    agentId: agentId
+                  })
+                });
+                
+                if (addToNewChannelResponse.ok) {
+                  console.log(`✅ [Socket.IO] Successfully added agent to new channel proactively`);
+                } else {
+                  console.log(`⚠️ [Socket.IO] Could not add agent to new channel yet`);
+                }
+              } else {
+                console.log(`⚠️ [Socket.IO] Could not create channel proactively yet`);
+              }
+            } catch (createErr) {
+              console.log(`⚠️ [Socket.IO] Error creating channel proactively:`, createErr.message);
             }
           }
-        } catch (verifyErr) {
-          console.log(`⚠️ [Socket.IO] Could not verify participants, but agent was added:`, verifyErr.message);
-          return true; // Assume success if we can't verify
+        } catch (err) {
+          console.log(`⚠️ [Socket.IO] Error in proactive agent addition:`, err.message);
         }
         
-        return true;
+        return sessionId;
       } else {
-        const errorData = await addAgentResponse.json().catch(() => ({ message: 'Unknown error' }));
-        console.error(`❌ [Socket.IO] Failed to add agent to channel ${channelId}:`, addAgentResponse.status, errorData);
-        return false;
+        const errorData = await sessionResponse.json().catch(() => ({ message: 'Unknown error' }));
+        console.error(`❌ [Socket.IO] Failed to create session:`, sessionResponse.status, errorData);
+        return null;
       }
     } catch (err) {
-      console.error(`❌ [Socket.IO] Error adding agent to channel ${channelId}:`, err);
-      return false;
+      console.error(`❌ [Socket.IO] Error creating session:`, err);
+      return null;
     }
-  }, [agentId]);
+  }, [agentId, userId]);
 
   /**
-   * Find and setup the correct channel with agent participation
+   * Setup agent session using Sessions API
    */
-  const setupAgentChannel = useCallback(async () => {
+  const setupAgentSession = useCallback(async () => {
     try {
-      console.log('🔍 [Socket.IO] Setting up channel with agent participation...');
+      console.log('🔍 [Socket.IO] Setting up agent session using Sessions API...');
       
-      // Try standard central channel patterns
-      const possibleCentralChannels = [
-        'central',                      // Global central channel
-        'default',                      // Default channel
-        'main',                         // Main channel
-        'general',                      // General channel
-        agentId                        // Agent ID as channel
-      ];
+      // Create a session for the agent
+      const sessionId = await createAgentSession();
       
-      // Try each channel and ensure agent participation
-      for (const channelId of possibleCentralChannels) {
-        console.log(`🔍 [Socket.IO] Trying channel: ${channelId}`);
+      if (sessionId) {
+        console.log(`✅ [Socket.IO] Successfully created session: ${sessionId}`);
         
-        // Add agent to this channel
-        const agentAdded = await addAgentToChannel(channelId);
-        
-        if (agentAdded) {
-          console.log(`✅ [Socket.IO] Successfully setup channel with agent participation: ${channelId}`);
-          return channelId;
-        }
-      }
-      
-      // If no standard channel works, create a session-based channel
-      console.log('🔄 [Socket.IO] No standard channel worked, creating session-based channel...');
-      
-      try {
-        const sessionResponse = await fetch(`${BASE_URL}/api/messaging/sessions`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            agentId: agentId,
-            userId: userId,
-            metadata: { platform: 'web', interface: 'socket-agent-participation' }
-          })
-        });
-        
-        if (sessionResponse.ok) {
-          const sessionData = await sessionResponse.json();
-          const sessionChannelId = sessionData.sessionId;
-          console.log('✅ [Sessions API] Created session-based channel:', sessionChannelId);
+        // Try to explicitly add agent as participant to the session
+        try {
+          console.log('🤖 [Socket.IO] Attempting to add agent as participant to session...');
           
-          // Try to add agent to this session-based channel too
-          await addAgentToChannel(sessionChannelId);
+          // Method 1: Try to add agent via Sessions API (if available)
+          const addAgentResponse = await fetch(`${BASE_URL}/api/messaging/sessions/${sessionId}/participants`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-API-Key': getConfig().API_KEY || ''
+            },
+            body: JSON.stringify({
+              agentId: agentId,
+              entityType: 'agent'
+            })
+          });
           
-          return sessionChannelId;
+          if (addAgentResponse.ok) {
+            console.log('✅ [Socket.IO] Successfully added agent as participant via Sessions API');
+          } else {
+            console.log('⚠️ [Socket.IO] Sessions API participant addition not available, will use Socket.IO method');
+          }
+        } catch (err) {
+          console.log('⚠️ [Socket.IO] Sessions API participant addition failed, will use Socket.IO method:', err.message);
         }
-      } catch (sessionErr) {
-        console.error('❌ [Sessions API] Failed to create session-based channel:', sessionErr);
+        
+        return sessionId;
+      } else {
+        console.log('❌ [Socket.IO] Failed to create session');
+        return null;
       }
-      
-      // Last resort: Use agent ID
-      console.log('🔄 [Socket.IO] Last resort: using agent ID as channel');
-      await addAgentToChannel(agentId);
-      return agentId;
-      
     } catch (err) {
-      console.error('❌ [Socket.IO] Failed to setup agent channel:', err);
-      return agentId; // Fallback to agent ID
+      console.error('❌ [Socket.IO] Error setting up agent session:', err);
+      return null;
     }
-  }, [agentId, userId, addAgentToChannel]);
+  }, [createAgentSession, agentId]);
 
   /**
    * Start Socket.IO connection (Pure Socket.IO - No Sessions API)
@@ -474,19 +672,19 @@ function useElizaSocketIO(agentId, userId) {
       console.log('   Agent ID:', agentId);
       console.log('   User ID:', userId);
       
-      // Setup channel with proper agent participation (CRITICAL FIX)
-      const correctChannelId = await setupAgentChannel();
+      // Setup agent session using Sessions API
+      const sessionChannelId = await setupAgentSession();
       
-      console.log('🔗 [Socket.IO] Using discovered channel ID:', correctChannelId);
+      console.log('🔗 [Socket.IO] Using session ID:', sessionChannelId);
       
       // Set basic connection info
-      setSessionInfo({ roomId: correctChannelId, agentId, userId });
+      setSessionInfo({ roomId: sessionChannelId, agentId, userId });
       setConnected(true);
       
       // Initialize Socket.IO connection
-      initializeSocket(correctChannelId, null);
+      initializeSocket(sessionChannelId, null);
       
-      return correctChannelId;
+      return sessionChannelId;
       
     } catch (err) {
       console.error('❌ [Socket.IO] Failed to start connection:', err);
@@ -496,7 +694,7 @@ function useElizaSocketIO(agentId, userId) {
     } finally {
       setLoading(false);
     }
-  }, [agentId, userId, initializeSocket, setupAgentChannel]);
+  }, [agentId, userId, initializeSocket, setupAgentSession]);
   
   /**
    * Send a message using pure Socket.IO
@@ -601,6 +799,34 @@ function useElizaSocketIO(agentId, userId) {
             : msg
         )
       );
+      
+      // After sending the first message, ElizaOS will auto-create a channel
+      // We need to wait for the channel to be created and then add the agent
+      setTimeout(async () => {
+        try {
+          console.log('🤖 [Socket.IO] Attempting to add agent to auto-created channel...');
+          
+          // Try to add agent to the session ID (which might be the channel ID)
+          const addAgentResponse = await fetch(`${BASE_URL}/api/messaging/central-channels/${roomId.current}/agents`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-API-Key': getConfig().API_KEY || ''
+            },
+            body: JSON.stringify({
+              agentId: agentId
+            })
+          });
+          
+          if (addAgentResponse.ok) {
+            console.log('✅ [Socket.IO] Successfully added agent to auto-created channel');
+          } else {
+            console.log('⚠️ [Socket.IO] Could not add agent to channel yet, will retry on next message');
+          }
+        } catch (err) {
+          console.log('⚠️ [Socket.IO] Error adding agent to channel:', err.message);
+        }
+      }, 2000); // Wait 2 seconds for channel creation
       
       return userMessage;
       

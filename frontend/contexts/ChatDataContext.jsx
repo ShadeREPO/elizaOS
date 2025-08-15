@@ -50,15 +50,26 @@ export const ChatDataProvider = ({
     setError(null);
     
     try {
-      const url = buildApiUrl(`/api/memories/${agentId}/conversations`);
+      // Use memory API instead of missing conversations endpoint
+      const url = buildApiUrl(`/api/memory/${agentId}/memories?limit=50&includeEmbedding=false`);
       const response = await authenticatedGet(url);
-      const data = await handleApiResponse(response, 'Fetch conversations');
-      const conversations = data.conversations || [];
+      const data = await handleApiResponse(response, 'Fetch memories');
+      const memories = data.memories || [];
+      
+      // Convert memories to conversation format for compatibility
+      const conversations = memories.map((memory, index) => ({
+        id: memory.id || `memory-${index}`,
+        messageCount: 1,
+        lastActivity: memory.timestamp || memory.createdAt,
+        participants: [agentId],
+        preview: memory.content?.text?.substring(0, 100) || 'Memory content',
+        timestamp: memory.timestamp || memory.createdAt
+      }));
       
       setConversationList(conversations);
       setLastUpdated(new Date());
       
-      console.log(`📋 [ChatData] Loaded ${conversations.length} conversations (lightweight)`);
+      console.log(`📋 [ChatData] Loaded ${conversations.length} conversations from memories API`);
       
     } catch (err) {
       console.error('❌ [ChatData] Error loading conversations:', err);
