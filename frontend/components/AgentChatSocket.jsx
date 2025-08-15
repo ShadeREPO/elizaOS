@@ -39,6 +39,7 @@ function AgentChatSocket({ theme = 'dark' }) {
     socketReady,
     isThinking,
     error,
+    agentReady, // New state to track if agent is actually ready
     sendMessage,
     addSystemMessage,
     clearMessages,
@@ -215,6 +216,21 @@ function AgentChatSocket({ theme = 'dark' }) {
                         Waking up Purl...
                       </p>
                     )}
+                    {connected && !socketReady && (
+                      <p className="empty-status">
+                        Connecting to Purl...
+                      </p>
+                    )}
+                    {connected && socketReady && !agentReady && (
+                      <p className="empty-status">
+                        💬 Say hello to wake up Purl! The first message will activate the chat.
+                      </p>
+                    )}
+                    {connected && socketReady && agentReady && (
+                      <p className="empty-status">
+                        ✅ Purl is ready to chat!
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <div className="messages-list">
@@ -314,6 +330,8 @@ function AgentChatSocket({ theme = 'dark' }) {
                         ? "Waking up Purl..." 
                         : !socketReady
                         ? "Connecting to Purl..."
+                        : !agentReady
+                        ? "Say hello to wake up Purl! (First message will activate the chat)"
                         : "Say hello to Purl..."
                     }
                     disabled={!connected || !socketReady || loading}
