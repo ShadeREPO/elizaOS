@@ -43,13 +43,24 @@ async function testEndpoint(url, method = 'GET', body = null) {
   }
 }
 
+// Generate proper UUID v4
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 async function main() {
   const BASE_URL = 'https://elizaos-production-2d55.up.railway.app';
   const AGENT_ID = 'b850bc30-45f8-0041-a00a-83df46d8555d';
+  const USER_ID = generateUUID(); // Generate proper UUID for user
 
   console.log('🚀 Testing ElizaOS API Endpoints');
   console.log('Base URL:', BASE_URL);
   console.log('Agent ID:', AGENT_ID);
+  console.log('User ID:', USER_ID);
 
   // Test basic endpoints
   await testEndpoint(`${BASE_URL}/`);
@@ -60,8 +71,8 @@ async function main() {
   await testEndpoint(`${BASE_URL}/api/memory/${AGENT_ID}/memories?limit=1`);
   await testEndpoint(`${BASE_URL}/api/messaging/sessions`, 'POST', {
     agentId: AGENT_ID,
-    userId: 'test-user',
-    metadata: { platform: 'web' }
+    userId: USER_ID,
+    metadata: { platform: 'web', username: 'test-user', interface: 'purl-chat-app' }
   });
   
   // Test the endpoint that's failing
