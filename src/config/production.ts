@@ -35,9 +35,7 @@ export const productionConfig = {
   // Security configuration
   security: {
     apiKey: process.env.API_KEY,
-    requireApiKey: process.env.REQUIRE_API_KEY === 'true' || process.env.NODE_ENV === 'production',
-    disableDashboard: process.env.DISABLE_DASHBOARD === 'true',
-    apiOnlyMode: process.env.API_ONLY_MODE === 'true'
+    requireApiKey: process.env.REQUIRE_API_KEY === 'true' || process.env.NODE_ENV === 'production'
   },
   
   // Logging configuration
@@ -65,14 +63,11 @@ export function validateProductionConfig(): boolean {
       elizaLogger.warn('⚠️ SECURITY WARNING: No CORS origins specified. This allows all origins.');
     }
     
-    if (config.security.disableDashboard) {
-      elizaLogger.info('🔒 Dashboard is disabled for security');
-    } else {
-      elizaLogger.warn('⚠️ Dashboard is enabled - ensure this is intended for production');
-    }
+    elizaLogger.info('🔒 Dashboard and all APIs enabled for production');
+    elizaLogger.info('🌐 Web UI, Sessions API, and Socket.IO available');
     
     elizaLogger.info('✅ Production configuration validated successfully');
-    elizaLogger.info(`🔒 Security Mode: API-only (dashboard disabled)`);
+    elizaLogger.info(`🔒 Security Mode: Full API access with authentication`);
     elizaLogger.info(`🔑 API Key: Required`);
     elizaLogger.info(`🌐 CORS Origins: ${config.server.cors.origin.join(', ') || 'ALL (INSECURE)'}`);
   }

@@ -1,0 +1,13 @@
+warning: in the working copy of 'src/character.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/character.ts b/src/character.ts[m
+[1mindex c9bdb91..d57ccb0 100644[m
+[1m--- a/src/character.ts[m
+[1m+++ b/src/character.ts[m
+[36m@@ -8,7 +8,6 @@[m [mimport { type Character } from '@elizaos/core';[m
+  */[m
+ export const character: Character = {[m
+   name: 'Eliza',[m
+[31m-  clients: ['direct'], // Enable web UI and /chat endpoint[m
+   plugins: [[m
+     // Core plugins first[m
+     '@elizaos/plugin-sql',[m
