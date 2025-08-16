@@ -51,7 +51,7 @@ temp/
 *.pglite3
 
 # ElizaOS specific
-.eliza/
-.elizadb/
-pglite/
-cache/
+# .eliza/
+# .elizadb/
+# pglite/
+# cache/
