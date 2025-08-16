@@ -7,7 +7,7 @@ import { type Character } from '@elizaos/core';
  * Eliza's responses are geared towards providing assistance on various topics while maintaining a friendly demeanor.
  */
 export const character: Character = {
-  name: 'Eliza',
+  name: 'Purl',
   plugins: [
     // Core plugins first
     '@elizaos/plugin-sql',
