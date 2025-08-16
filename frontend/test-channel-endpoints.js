@@ -1,6 +1,7 @@
 /**
  * Test script to find the correct API endpoint for adding agents to channels
  * This will help us identify which endpoint actually exists in ElizaOS
+ * Testing with Purl Agent (40608b6b-63b6-0e2c-b819-9d9850d060ec)
  */
 
 const BASE_URL = 'https://elizaos-production-2d55.up.railway.app';
@@ -54,7 +55,7 @@ async function testChannelEndpoints() {
   await testEndpoint(`${BASE_URL}/api/messaging/central-channels`);
   await testEndpoint(`${BASE_URL}/api/messaging/central-channels/${TEST_CHANNEL_ID}`);
   await testEndpoint(`${BASE_URL}/api/messaging/central-channels/${TEST_CHANNEL_ID}/agents`, 'POST', {
-    agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d'
+    agentId: '40608b6b-63b6-0e2c-b819-9d9850d060ec'
   });
   await testEndpoint(`${BASE_URL}/api/messaging/central-channels/${TEST_CHANNEL_ID}/participants`);
   
@@ -63,7 +64,7 @@ async function testChannelEndpoints() {
   await testEndpoint(`${BASE_URL}/api/messaging/channels`);
   await testEndpoint(`${BASE_URL}/api/messaging/channels/${TEST_CHANNEL_ID}`);
   await testEndpoint(`${BASE_URL}/api/messaging/channels/${TEST_CHANNEL_ID}/agents`, 'POST', {
-    agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d'
+    agentId: '40608b6b-63b6-0e2c-b819-9d9850d060ec'
   });
   await testEndpoint(`${BASE_URL}/api/messaging/channels/${TEST_CHANNEL_ID}/participants`);
   
@@ -72,7 +73,7 @@ async function testChannelEndpoints() {
   await testEndpoint(`${BASE_URL}/api/messaging/rooms`);
   await testEndpoint(`${BASE_URL}/api/messaging/rooms/${TEST_CHANNEL_ID}`);
   await testEndpoint(`${BASE_URL}/api/messaging/rooms/${TEST_CHANNEL_ID}/agents`, 'POST', {
-    agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d'
+    agentId: '40608b6b-63b6-0e2c-b819-9d9850d060ec'
   });
   await testEndpoint(`${BASE_URL}/api/messaging/rooms/${TEST_CHANNEL_ID}/participants`);
   
@@ -81,14 +82,14 @@ async function testChannelEndpoints() {
   await testEndpoint(`${BASE_URL}/api/messaging/participants`);
   await testEndpoint(`${BASE_URL}/api/messaging/participants`, 'POST', {
     channelId: TEST_CHANNEL_ID,
-    agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d'
+    agentId: '40608b6b-63b6-0e2c-b819-9d9850d060ec'
   });
   
   // Test 5: Check if sessions have participant management
   console.log('\n5️⃣ Testing session participant management...');
   await testEndpoint(`${BASE_URL}/api/messaging/sessions/${TEST_CHANNEL_ID}/participants`);
   await testEndpoint(`${BASE_URL}/api/messaging/sessions/${TEST_CHANNEL_ID}/participants`, 'POST', {
-    agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d'
+    agentId: '40608b6b-63b6-0e2c-b819-9d9850d060ec'
   });
   
   console.log('\n✅ Channel endpoint testing complete!');

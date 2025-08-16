@@ -47,8 +47,8 @@ function PurlApp() {
   }, [currentTheme]);
 
   return (
-    <ElizaMemoriesProvider agentId="b850bc30-45f8-0041-a00a-83df46d8555d">
-      <ChatDataProvider agentId="b850bc30-45f8-0041-a00a-83df46d8555d">
+            <ElizaMemoriesProvider agentId="40608b6b-63b6-0e2c-b819-9d9850d060ec">
+          <ChatDataProvider agentId="40608b6b-63b6-0e2c-b819-9d9850d060ec">
         <Router>
         <div className="purl-app fullscreen-mode">
         {/* Terminal Header - Navigation and branding */}

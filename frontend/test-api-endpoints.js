@@ -3,6 +3,7 @@
  * 
  * This script tests various API endpoints to understand the actual
  * ElizaOS API structure on Railway deployment.
+ * Testing with Purl Agent (40608b6b-63b6-0e2c-b819-9d9850d060ec)
  */
 
 async function testEndpoint(url, method = 'GET', body = null) {
@@ -54,7 +55,7 @@ function generateUUID() {
 
 async function main() {
   const BASE_URL = 'https://elizaos-production-2d55.up.railway.app';
-  const AGENT_ID = 'b850bc30-45f8-0041-a00a-83df46d8555d';
+  const AGENT_ID = '40608b6b-63b6-0e2c-b819-9d9850d060ec';
   const USER_ID = generateUUID(); // Generate proper UUID for user
 
   console.log('🚀 Testing ElizaOS API Endpoints');

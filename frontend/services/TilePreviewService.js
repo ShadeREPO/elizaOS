@@ -116,7 +116,7 @@ class TilePreviewService {
    * Fetch batched previews from server (using existing ElizaOS memory API)
    */
   async _fetchBatchedPreviews(conversationIds, retryCount = 0) {
-    const agentId = 'b850bc30-45f8-0041-a00a-83df46d8555d';
+    const agentId = '40608b6b-63b6-0e2c-b819-9d9850d060ec';
     
     try {
       console.log(`🌐 [TilePreview] Fetching batch of ${conversationIds.length} conversations`);

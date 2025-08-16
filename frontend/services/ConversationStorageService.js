@@ -76,7 +76,7 @@ class ConversationStorageService {
    * Store conversation in ElizaOS memory system
    */
   async storeInElizaMemory(conversationData) {
-    const agentId = conversationData.agentId || 'b850bc30-45f8-0041-a00a-83df46d8555d';
+    const agentId = conversationData.agentId || '40608b6b-63b6-0e2c-b819-9d9850d060ec';
     
     // Store each message as a memory in ElizaOS
     for (const message of conversationData.messages) {

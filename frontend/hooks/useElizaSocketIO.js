@@ -4,6 +4,7 @@ import { getConfig } from '../utils/config.js';
 
 /**
  * Clean ElizaOS Socket.IO Hook - Minimal Logging, Production Ready
+ * Configured for Purl Agent (40608b6b-63b6-0e2c-b819-9d9850d060ec)
  */
 function useElizaSocketIO(agentId, userId) {
   // Only log in development
@@ -49,9 +50,9 @@ function useElizaSocketIO(agentId, userId) {
           'X-API-Key': getConfig().API_KEY || ''
         },
         body: JSON.stringify({
-          name: `Chat Session ${sessionId?.slice(0, 8) || 'New'}`,
+          name: `Purl Chat ${sessionId?.slice(0, 8) || 'New'}`,
           serverId: '00000000-0000-0000-0000-000000000000', // Default server ID
-          description: 'Chat channel for ElizaOS session',
+          description: 'Chat channel for Purl agent session',
           type: 'text'
         })
       });
@@ -172,7 +173,7 @@ function useElizaSocketIO(agentId, userId) {
         const isFromAgent = (
           data.senderId === agentId ||
           data.authorId === agentId ||
-          data.senderName === 'Eliza' ||
+          data.senderName === 'Purl' ||
           data.source === 'agent_response'
         );
         

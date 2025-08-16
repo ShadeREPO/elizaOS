@@ -1,5 +1,6 @@
 /**
  * Test Sessions API with proper UUID formats
+ * Testing with Purl Agent (40608b6b-63b6-0e2c-b819-9d9850d060ec)
  */
 
 // Generate proper UUID v4
@@ -13,7 +14,7 @@ function generateUUID() {
 
 async function testSessionsAPI() {
   const BASE_URL = 'https://elizaos-production-2d55.up.railway.app';
-  const AGENT_ID = 'b850bc30-45f8-0041-a00a-83df46d8555d'; // Already a valid UUID
+  const AGENT_ID = '40608b6b-63b6-0e2c-b819-9d9850d060ec'; // Purl Agent UUID
   const USER_ID = generateUUID(); // Generate proper UUID for user
   
   console.log('🚀 Testing Sessions API with proper UUIDs');
@@ -54,7 +55,7 @@ async function testSessionsAPI() {
             'X-API-Key': 'zK=ogGk@LJZfb58qMB&e%VPnRx+H0!w?'
           },
           body: JSON.stringify({
-            content: 'Hello Eliza! This is a test message.',
+            content: 'Hello Purl! This is a test message.',
             metadata: {
               userTimezone: 'America/New_York',
               timestamp: new Date().toISOString()

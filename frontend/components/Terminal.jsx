@@ -8,7 +8,7 @@ import BackroomTerminal from './BackroomTerminal.jsx';
  */
 const Terminal = ({ theme = 'dark' }) => {
   // ElizaOS Agent ID - you may want to make this configurable
-  const AGENT_ID = 'b850bc30-45f8-0041-a00a-83df46d8555d';
+  const AGENT_ID = '40608b6b-63b6-0e2c-b819-9d9850d060ec';
 
   return (
     <div className="terminal-page">

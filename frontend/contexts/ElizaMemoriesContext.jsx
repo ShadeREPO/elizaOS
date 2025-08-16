@@ -26,7 +26,7 @@ const ElizaMemoriesContext = createContext(null);
  */
 export const ElizaMemoriesProvider = ({ 
   children, 
-  agentId = 'b850bc30-45f8-0041-a00a-83df46d8555d' // Default agent ID
+  agentId = '40608b6b-63b6-0e2c-b819-9d9850d060ec' // Default agent ID
 }) => {
   // Debug: Track provider instances
   React.useEffect(() => {
