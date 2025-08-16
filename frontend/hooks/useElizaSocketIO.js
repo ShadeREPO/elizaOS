@@ -475,6 +475,7 @@ function useElizaSocketIO(agentId, userId) {
               thought: data.thought,
               actions: data.actions,
               agentAction: agentAction,
+              attachments: data.attachments || [], // Include attachments for images and files
               realTime: true
             }
           };
@@ -786,22 +787,23 @@ function useElizaSocketIO(agentId, userId) {
           log('🤖 Agent action in response:', agentAction);
         }
         
-        // Handle the response content
-        if (data.content || data.text || data.message) {
-          const agentMessage = {
-            id: data.id || generateUUID(),
-            content: data.text || data.content || data.message,
-            authorId: data.senderId || data.authorId || agentId,
-            isAgent: true,
-            createdAt: new Date(data.createdAt || Date.now()),
-            metadata: {
-              thought: data.thought,
-              actions: data.actions,
-              agentAction: agentAction,
-              realTime: true,
-              source: 'elizaos_agent_response'
-            }
-          };
+                 // Handle the response content
+         if (data.content || data.text || data.message) {
+           const agentMessage = {
+             id: data.id || generateUUID(),
+             content: data.text || data.content || data.message,
+             authorId: data.senderId || data.authorId || agentId,
+             isAgent: true,
+             createdAt: new Date(data.createdAt || Date.now()),
+             metadata: {
+               thought: data.thought,
+               actions: data.actions,
+               agentAction: agentAction,
+               attachments: data.attachments || [], // Include attachments
+               realTime: true,
+               source: 'elizaos_agent_response'
+             }
+           };
           
           setMessages(prev => {
             const withoutThinking = prev.filter(msg => !msg.isThinking);

@@ -205,6 +205,71 @@ function AgentChatSocket({ theme = 'dark' }) {
     addSystemMessage('Starting new chat with Purl...', 'info');
   };
 
+  // Handle image click for full-screen view
+  const handleImageClick = (imageUrl, altText) => {
+    // Open image in a new tab for full-screen viewing
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>Generated Image - ${altText}</title>
+            <style>
+              body { 
+                margin: 0; 
+                padding: 20px; 
+                background: #000; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                min-height: 100vh;
+                font-family: system-ui, -apple-system, sans-serif;
+              }
+              img { 
+                max-width: 100%; 
+                max-height: 100vh; 
+                border-radius: 8px;
+                box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+              }
+              .image-info {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                color: white;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                backdrop-filter: blur(8px);
+              }
+              .close-btn {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                color: white;
+                background: rgba(255, 255, 255, 0.1);
+                border: none;
+                padding: 12px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                backdrop-filter: blur(8px);
+              }
+              .close-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+              }
+            </style>
+          </head>
+          <body>
+            <div class="image-info">🎨 AI Generated Image by Purl</div>
+            <button class="close-btn" onclick="window.close()">✕ Close</button>
+            <img src="${imageUrl}" alt="${altText}" />
+          </body>
+        </html>
+      `);
+    }
+  };
+
   return (
     <div className={`about-page ${theme}`}>
       <div className="about-container">
@@ -357,7 +422,71 @@ function AgentChatSocket({ theme = 'dark' }) {
                                 <span className="action-text">{actionInfo.content}</span>
                               </div>
                             ) : (
-                              msg.content
+                              <div className="message-text-content">
+                                {msg.content}
+                                
+                                {/* Render image attachments */}
+                                {msg.metadata?.attachments && msg.metadata.attachments.length > 0 && (
+                                  <div className="message-attachments">
+                                    {msg.metadata.attachments
+                                      .filter(attachment => attachment.contentType === 'image' || attachment.url?.includes('img-'))
+                                      .map((attachment, index) => (
+                                        <div key={attachment.id || index} className="image-attachment">
+                                          <div className="image-header">
+                                            <span className="image-title">
+                                              🎨 {attachment.title || 'Generated Image'}
+                                            </span>
+                                            {msg.metadata?.agentAction === 'GENERATE_IMAGE' && (
+                                              <span className="image-badge">AI Generated</span>
+                                            )}
+                                          </div>
+                                          <div className="image-container">
+                                            <img 
+                                              src={attachment.url} 
+                                              alt={attachment.title || msg.content || 'Generated image'}
+                                              className="generated-image"
+                                              loading="lazy"
+                                              onClick={() => handleImageClick(attachment.url, attachment.title || msg.content || 'Generated image')}
+                                              onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'block';
+                                              }}
+                                            />
+                                            <div className="image-error" style={{ display: 'none' }}>
+                                              <span className="error-icon">🖼️</span>
+                                              <span>Image could not be loaded</span>
+                                              <a href={attachment.url} target="_blank" rel="noopener noreferrer" className="image-link">
+                                                View Original
+                                              </a>
+                                            </div>
+                                          </div>
+                                          {msg.metadata?.thought && (
+                                            <div className="image-caption">
+                                              <span className="caption-icon">💭</span>
+                                              <span className="caption-text">{msg.metadata.thought}</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                  </div>
+                                )}
+                                
+                                {/* Render other attachment types */}
+                                {msg.metadata?.attachments && msg.metadata.attachments.length > 0 && (
+                                  <div className="other-attachments">
+                                    {msg.metadata.attachments
+                                      .filter(attachment => attachment.contentType !== 'image' && !attachment.url?.includes('img-'))
+                                      .map((attachment, index) => (
+                                        <div key={attachment.id || index} className="file-attachment">
+                                          <span className="file-icon">📎</span>
+                                          <a href={attachment.url} target="_blank" rel="noopener noreferrer" className="file-link">
+                                            {attachment.title || 'Attachment'}
+                                          </a>
+                                        </div>
+                                      ))}
+                                  </div>
+                                )}
+                              </div>
                             )}
                           </div>
                           
