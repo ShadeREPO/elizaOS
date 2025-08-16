@@ -5,6 +5,8 @@ import { ElizaMemoriesProvider } from './contexts/ElizaMemoriesContext.jsx';
 import CatDisplay from './components/CatDisplay.jsx';
 import TerminalHeader from './components/TerminalHeader.jsx';
 import Footer from './components/Footer.jsx';
+import BottomNavigation from './components/BottomNavigation.jsx';
+import FloatingChatButton from './components/FloatingChatButton.jsx';
 
 import About from './components/About.jsx';
 import Docs from './components/Docs.jsx';
@@ -114,6 +116,11 @@ function PurlApp() {
           } />
         </Routes>
         
+        {/* Bottom Navigation - Mobile Only */}
+        <BottomNavigation theme={currentTheme} onThemeChange={handleThemeChange} />
+        
+        {/* Floating Chat Button - Mobile Only */}
+        <FloatingChatButton theme={currentTheme} />
 
         {/* Hidden title for SEO and accessibility */}
         <h1 style={{ 

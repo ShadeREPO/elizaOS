@@ -40,6 +40,7 @@ function AgentChatSocket({ theme = 'dark' }) {
     isThinking,
     error,
     agentReady, // New state to track if agent is actually ready
+    lastAgentAction, // Track agent's last response action
     sendMessage,
     addSystemMessage,
     clearMessages,
@@ -159,6 +160,44 @@ function AgentChatSocket({ theme = 'dark' }) {
     });
   };
 
+  // Get action-specific message content and styling
+  const getActionMessageInfo = (action) => {
+    switch (action) {
+      case 'IGNORE':
+        return {
+          content: "Purl has chosen to ignore your message. They might be busy or not interested in this topic right now.",
+          icon: "😴",
+          className: "agent-ignore"
+        };
+      case 'GENERATE_IMAGE':
+        return {
+          content: "Purl is generating an image for you...",
+          icon: "🎨",
+          className: "agent-action"
+        };
+      case 'UPDATE_CONTACT':
+        return {
+          content: "Purl is updating contact information...",
+          icon: "📝",
+          className: "agent-action"
+        };
+      case 'MUTE_ROOM':
+        return {
+          content: "Purl has muted this conversation.",
+          icon: "🔇",
+          className: "agent-mute"
+        };
+      case 'NONE':
+        return {
+          content: "Purl received your message but chose not to respond.",
+          icon: "🤐",
+          className: "agent-none"
+        };
+      default:
+        return null;
+    }
+  };
+
   // Handle session restart
   const handleRestart = async () => {
     await endSession();
@@ -178,8 +217,39 @@ function AgentChatSocket({ theme = 'dark' }) {
             Real-time connection to Purl's consciousness. Experience live conversations with my immortal cat's digital mind. Each user has a unique chat history with Purl.
           </p>
           
-
+          {/* Agent Action Status Indicator */}
+          {lastAgentAction && lastAgentAction !== 'REPLY' && (
+            <div className="agent-action-status">
+              <span className="action-status-icon">
+                {getActionMessageInfo(lastAgentAction)?.icon || '🤖'}
+              </span>
+              <span className="action-status-text">
+                Last action: {lastAgentAction.replace('_', ' ')}
+              </span>
+            </div>
+          )}
         </header>
+
+        {/* Agent Response Actions Info */}
+        <div className="agent-actions-info">
+          <details className="actions-details">
+            <summary className="actions-summary">
+              <span className="info-icon">ℹ️</span>
+              <span>Purl's Response Actions</span>
+            </summary>
+            <div className="actions-content">
+              <p>Purl can choose different actions when responding to your messages:</p>
+              <ul className="actions-list">
+                <li><strong>REPLY:</strong> Purl responds with a message</li>
+                <li><strong>IGNORE:</strong> Purl chooses not to respond</li>
+                <li><strong>GENERATE_IMAGE:</strong> Purl creates an image for you</li>
+                <li><strong>UPDATE_CONTACT:</strong> Purl updates contact information</li>
+                <li><strong>MUTE_ROOM:</strong> Purl mutes the conversation</li>
+                <li><strong>NONE:</strong> Purl acknowledges but doesn't respond</li>
+              </ul>
+            </div>
+          </details>
+        </div>
 
         {/* Main Chat Content */}
         <main className="about-content">
@@ -228,68 +298,78 @@ function AgentChatSocket({ theme = 'dark' }) {
                     )}
                     {connected && socketReady && agentReady && (
                       <p className="empty-status">
-                        ✅ Purl is ready to chat!
+                        ✅ Purl is ready to chat! They may choose to reply, ignore, or take other actions.
                       </p>
                     )}
                   </div>
                 ) : (
                   <div className="messages-list">
-                    {messages.map((msg) => (
-                      <div key={msg.id} className={`message ${
-                        msg.isAgent ? 'agent-message' : msg.isSystem ? 'system-message' : 'user-message'
-                      } ${msg.isThinking ? 'thinking' : ''}`}>
-                        
-                        {!msg.isSystem && (
-                          <div className="message-header">
-                            <span className="message-author">
-                              {msg.isAgent ? 'Purl' : 'You'}
-                            </span>
-                            
-                            {msg.status && (
-                              <span className="message-status">
-                                {msg.status === 'sending' && '⏳'}
-                                {msg.status === 'delivered' && '✓'}
-                                {msg.status === 'error' && '❌'}
-                                {msg.status === 'thinking' && '💭'}
+                    {messages.map((msg) => {
+                      // Check if this is a system message with agent action
+                      const actionInfo = msg.metadata?.agentAction ? getActionMessageInfo(msg.metadata.agentAction) : null;
+                      const isActionMessage = actionInfo && msg.isSystem;
+                      
+                      return (
+                        <div key={msg.id} className={`message ${
+                          msg.isAgent ? 'agent-message' : msg.isSystem ? 'system-message' : 'user-message'
+                        } ${msg.isThinking ? 'thinking' : ''} ${isActionMessage ? actionInfo.className : ''}`}
+                             data-system-type={msg.metadata?.systemType || ''}>
+                          
+                          {!msg.isSystem && (
+                            <div className="message-header">
+                              <span className="message-author">
+                                {msg.isAgent ? 'Purl' : 'You'}
                               </span>
-                            )}
-                            
-                            {msg.metadata?.realTime && (
-                              <span className="message-badge realtime">⚡ Live</span>
-                            )}
-                            
-                            {msg.metadata?.direct && (
-                              <span className="message-badge api">📡 API</span>
+                              
+                              {msg.status && (
+                                <span className="message-status">
+                                  {msg.status === 'sending' && '⏳'}
+                                  {msg.status === 'delivered' && '✓'}
+                                  {msg.status === 'error' && '❌'}
+                                  {msg.status === 'thinking' && '💭'}
+                                </span>
+                              )}
+                              
+                              {msg.metadata?.realTime && (
+                                <span className="message-badge realtime">⚡ Live</span>
+                              )}
+                              
+                              {msg.metadata?.direct && (
+                                <span className="message-badge api">📡 API</span>
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* Message Content */}
+                          <div className="message-content">
+                            {msg.isThinking ? (
+                              <div className="typing-indicator">
+                                <span>{msg.content}</span>
+                                <div className="typing-dots">
+                                  <span></span>
+                                  <span></span>
+                                  <span></span>
+                                </div>
+                              </div>
+                            ) : isActionMessage ? (
+                              <div className="action-message">
+                                <span className="action-icon">{actionInfo.icon}</span>
+                                <span className="action-text">{actionInfo.content}</span>
+                              </div>
+                            ) : (
+                              msg.content
                             )}
                           </div>
-                        )}
-                        
-                        {/* Message Content */}
-                        <div className="message-content">
-                          {msg.isThinking ? (
-                            <div className="typing-indicator">
-                              <span>{msg.content}</span>
-                              <div className="typing-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                              </div>
+                          
+                          {/* Timestamp */}
+                          {!msg.isSystem && (
+                            <div className="message-timestamp">
+                              {formatTime(msg.createdAt)}
                             </div>
-                          ) : (
-                            msg.content
                           )}
                         </div>
-                        
-
-                        
-                        {/* Timestamp */}
-                        {!msg.isSystem && (
-                          <div className="message-timestamp">
-                            {formatTime(msg.createdAt)}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                     
                     {/* Global thinking indicator */}
                     {isThinking && !messages.some(msg => msg.isThinking) && (

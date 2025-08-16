@@ -1097,8 +1097,9 @@
     display: none;
   }
   
+  /* Mobile menu button hidden when bottom nav is active */
   .mobile-menu-btn {
-    display: flex;
+    display: none !important;
   }
   
   .desktop-only {
@@ -1108,8 +1109,9 @@
 
 /* Tablets */
 @media (max-width: 768px) {
+  /* Mobile menu button stays hidden - using bottom navigation instead */
   .mobile-menu-btn {
-    display: flex;
+    display: none !important;
   }
   
   .terminal-header-container {
@@ -1192,6 +1194,505 @@
   .mobile-nav-link {
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
+  }
+}
+
+/* ================================================
+   BOTTOM NAVIGATION STYLES
+   ================================================ */
+
+/* Bottom Navigation - Mobile Only */
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.95);
+  border-top: 1px solid rgba(0, 255, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none; /* Hidden by default - shown on mobile */
+}
+
+.bottom-nav-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  padding: 0.5rem 0.25rem 0;
+  max-width: 100vw;
+  margin: 0 auto;
+}
+
+.bottom-nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem 0.75rem;
+  min-width: 44px; /* Touch-friendly minimum size */
+  min-height: 44px;
+  text-decoration: none;
+  color: rgba(0, 255, 0, 0.7);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item:focus {
+  background: rgba(0, 255, 0, 0.08);
+  color: #00ff00;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.bottom-nav-item.active {
+  color: #00ff00;
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.nav-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0.25rem;
+}
+
+.nav-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+.bottom-nav-item:hover .nav-icon,
+.bottom-nav-item.active .nav-icon {
+  transform: scale(1.1);
+}
+
+.active-indicator {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #00ff00;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+  animation: pulseGreen 2s infinite;
+}
+
+@keyframes pulseGreen {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1.2);
+  }
+}
+
+.nav-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.bottom-nav-item.active .nav-label {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Theme Toggle Button in Bottom Navigation */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(0, 255, 0, 0.12) !important;
+  transform: translateY(-2px) scale(1.05);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Light theme adjustments for theme toggle */
+.bottom-navigation.light .theme-toggle-btn:hover {
+  background: rgba(186, 130, 89, 0.12) !important;
+}
+
+/* Ripple effect for touch feedback */
+.nav-ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bottom-nav-item:active .nav-ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: rgba(0, 255, 0, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Bottom safe area for devices with home indicators */
+.bottom-safe-area {
+  height: env(safe-area-inset-bottom, 0);
+  background: inherit;
+}
+
+/* Light Theme - Bottom Navigation */
+.bottom-navigation.light {
+  background: rgba(248, 250, 252, 0.95);
+  border-top: 1px solid rgba(186, 130, 89, 0.2);
+}
+
+.bottom-navigation.light .bottom-nav-item {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+.bottom-navigation.light .bottom-nav-item:hover,
+.bottom-navigation.light .bottom-nav-item:focus {
+  background: rgba(186, 130, 89, 0.08);
+  color: #ba8259;
+}
+
+.bottom-navigation.light .bottom-nav-item.active {
+  color: #ba8259;
+  background: rgba(186, 130, 89, 0.1);
+}
+
+.bottom-navigation.light .active-indicator {
+  background: #ba8259;
+  box-shadow: 0 0 8px rgba(186, 130, 89, 0.6);
+  animation: pulseBrown 2s infinite;
+}
+
+@keyframes pulseBrown {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1.2);
+  }
+}
+
+.bottom-navigation.light .bottom-nav-item:active .nav-ripple::before {
+  background: rgba(186, 130, 89, 0.3);
+}
+
+/* Show bottom navigation on mobile devices */
+@media (max-width: 1023px) {
+  .bottom-navigation {
+    display: block;
+  }
+  
+  /* Add bottom padding to main content to prevent overlap */
+  .app-main {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0));
+  }
+  
+  /* Hide mobile hamburger menu since we have bottom navigation */
+  .mobile-menu-btn {
+    display: none !important;
+  }
+  
+  /* Hide mobile navigation overlay and menu */
+  .mobile-nav-overlay,
+  .mobile-nav {
+    display: none !important;
+  }
+  
+  /* Simplify header for mobile - remove extra elements */
+  .contract-section,
+  .social-links,
+  .header-theme-toggle {
+    display: none !important;
+  }
+  
+  /* Keep only essential header elements on mobile */
+  .header-actions {
+    gap: 0.5rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 768px) {
+  .bottom-nav-container {
+    padding: 0.75rem 0.5rem 0;
+  }
+  
+  .bottom-nav-item {
+    padding: 0.75rem 1rem 1rem;
+  }
+  
+  .nav-label {
+    font-size: 0.75rem;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+  .bottom-nav-container {
+    padding: 0.5rem 0.25rem 0;
+  }
+  
+  .bottom-nav-item {
+    padding: 0.5rem 0.5rem 0.75rem;
+    min-width: 48px;
+  }
+  
+  .nav-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .bottom-nav-item {
+    padding: 0.5rem 0.25rem 0.75rem;
+    min-width: 44px;
+  }
+  
+  .nav-label {
+    font-size: 0.6rem;
+  }
+}
+
+/* ================================================
+   FLOATING CHAT BUTTON STYLES
+   ================================================ */
+
+/* Floating Action Button - Mobile Only */
+.floating-chat-button {
+  position: fixed;
+  bottom: 90px; /* Above bottom navigation */
+  right: 1rem;
+  z-index: 95;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #00ff00, #00cc00);
+  border-radius: 50%;
+  display: none; /* Hidden by default - shown on mobile */
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 
+    0 4px 12px rgba(0, 255, 0, 0.4),
+    0 8px 24px rgba(0, 255, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.floating-chat-button:hover,
+.floating-chat-button:focus {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 
+    0 6px 16px rgba(0, 255, 0, 0.5),
+    0 12px 32px rgba(0, 255, 0, 0.3);
+  outline: none;
+}
+
+.floating-chat-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+.fab-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.fab-icon {
+  color: rgba(0, 0, 0, 0.8);
+  z-index: 2;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Pulse indicator for attention */
+.fab-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 0, 0.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: fabPulse 2.5s infinite;
+  z-index: 1;
+}
+
+@keyframes fabPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Ripple effect for touch feedback */
+.fab-ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-chat-button:active .fab-ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: fabRipple 0.6s ease-out;
+}
+
+@keyframes fabRipple {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Light Theme - Floating Chat Button */
+.floating-chat-button.light {
+  background: linear-gradient(135deg, #ba8259, #9c6d42);
+  box-shadow: 
+    0 4px 12px rgba(186, 130, 89, 0.4),
+    0 8px 24px rgba(186, 130, 89, 0.2);
+}
+
+.floating-chat-button.light:hover,
+.floating-chat-button.light:focus {
+  box-shadow: 
+    0 6px 16px rgba(186, 130, 89, 0.5),
+    0 12px 32px rgba(186, 130, 89, 0.3);
+}
+
+.floating-chat-button.light .fab-icon {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.floating-chat-button.light .fab-pulse {
+  background: rgba(186, 130, 89, 0.6);
+  animation: fabPulseBrown 2.5s infinite;
+}
+
+@keyframes fabPulseBrown {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Show floating chat button on mobile devices */
+@media (max-width: 1023px) {
+  .floating-chat-button {
+    display: flex;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 768px) {
+  .floating-chat-button {
+    bottom: 100px;
+    right: 1.25rem;
+    width: 52px;
+    height: 52px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+  .floating-chat-button {
+    bottom: 85px;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .fab-icon {
+    font-size: 1.5rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .floating-chat-button {
+    bottom: 80px;
+    right: 0.75rem;
+    width: 44px;
+    height: 44px;
+  }
+  
+  .fab-icon {
+    font-size: 1.4rem;
   }
 }
 
