@@ -10,6 +10,7 @@ import { type Character } from '@elizaos/core';
 
 export const character: Character = {
   name: 'Purl',
+  username:'Purl',
   plugins: [
     // Core plugins first
     '@elizaos/plugin-sql',
