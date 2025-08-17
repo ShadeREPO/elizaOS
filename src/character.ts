@@ -11,6 +11,7 @@ import { type Character } from '@elizaos/core';
 export const character: Character = {
   name: 'Purl',
   username:'Purl',
+  id: "40608b6b-63b6-0e2c-b819-9d9850d060ec",
   plugins: [
     // Core plugins first
     '@elizaos/plugin-sql',
