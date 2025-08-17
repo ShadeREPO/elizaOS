@@ -98,8 +98,10 @@
   background: rgba(255, 255, 255, 0.8);
   border-bottom: 1px solid var(--purl-gray-200);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
   backdrop-filter: blur(12px);
 }
@@ -233,7 +235,7 @@
 /* Main content - Always Full Screen with Header */
 .app-main {
   margin: 0;
-  width: 100vw;
+  width: 100%;
   background: #f9fafc;
   /* Position below fixed header - content starts exactly where header ends */
   position: absolute;
@@ -1162,8 +1164,8 @@
   }
   
   .mobile-nav {
-    width: 100vw;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
   }
   
   .mobile-nav-content {
@@ -1223,7 +1225,7 @@
   align-items: stretch;
   justify-content: space-around;
   padding: 0.5rem 0.25rem 0;
-  max-width: 100vw;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -1588,7 +1590,7 @@
   
   /* Full screen chat styling - only for chat pages */
   .app-main.chat-main .about-page .about-container {
-    max-width: 100vw;
+    max-width: 100%;
     padding: 0;
     margin: 0;
     min-height: calc(100vh - var(--header-height, 80px));
@@ -1968,7 +1970,7 @@
   .ascii-cat {
     /* Use responsive sizing instead of fixed size - 50% bigger */
     font-size: clamp(22.5px, 11.25vw, 72px);
-    max-width: 100vw;
+    max-width: 100%;
     max-height: 60vh;
     line-height: 0.8;
     white-space: pre;
@@ -2107,6 +2109,73 @@
   background: #000;
   color: #00ff00;
   position: relative;
+}
+
+/* Override for docs and about pages - allow scrolling */
+.purl-app.fullscreen-mode:has(.docs-main),
+.purl-app.fullscreen-mode:has(.about-main) {
+  overflow: auto !important;
+  height: auto !important;
+  min-height: 100vh;
+}
+
+/* Fallback for browsers without :has() support */
+.purl-app.fullscreen-mode .docs-main,
+.purl-app.fullscreen-mode .about-main {
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure the container allows scrolling */
+.docs-main,
+.about-main {
+  overflow-y: auto !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* Docs main background theme support */
+.docs-main {
+  background: #000;
+}
+
+.docs-main:has(.about-page.light) {
+  background: #f8fafc;
+}
+
+/* Ensure body and html allow scrolling when on docs/about pages */
+body:has(.docs-main),
+body:has(.about-main),
+html:has(.docs-main),
+html:has(.about-main) {
+  overflow: auto !important;
+  height: auto !important;
+}
+
+/* Fallback for browsers without :has() support */
+body.docs-page,
+body.about-page,
+html.docs-page,
+html.about-page {
+  overflow: auto !important;
+  height: auto !important;
+}
+
+/* Nuclear option - force scrolling on docs/about pages */
+.purl-app .docs-main .about-container,
+.purl-app .about-main .about-container {
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Override any height restrictions on the main app container */
+.purl-app:has(.docs-main) .about-container,
+.purl-app:has(.about-main) .about-container {
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
 }
 
 /* Terminal Header Styles */
@@ -2875,8 +2944,9 @@
 
 .tech-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
   background: rgba(0, 255, 0, 0.05);
   border: 1px solid rgba(0, 255, 0, 0.2);
   border-radius: 0.25rem;
@@ -2886,11 +2956,14 @@
 .tech-name {
   font-weight: 600;
   color: #00ff00;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .tech-desc {
-  color: rgba(0, 255, 0, 0.8);
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 /* Steps List */
@@ -3522,9 +3595,7 @@
   }
   
   .tech-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+    padding: 0.75rem;
   }
   
   .contact-links {
@@ -4162,6 +4233,418 @@
   font-family: 'Courier New', 'Lucida Console', 'Monaco', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+/* Documentation Styles */
+
+/* Table of Contents Grid */
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.toc-link {
+  display: block;
+  padding: 1rem;
+  background: var(--purl-gray-800);
+  border: 1px solid var(--purl-gray-700);
+  border-radius: 8px;
+  color: var(--purl-white);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.toc-link:hover {
+  background: var(--purl-gray-700);
+  border-color: var(--purl-green);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.light .toc-link {
+  background: var(--purl-white);
+  border-color: var(--purl-gray-200);
+  color: var(--purl-gray-800);
+}
+
+.light .toc-link:hover {
+  background: var(--purl-gray-50);
+  border-color: var(--purl-blue);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Feature Links */
+.feature-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.feature-link:hover {
+  text-decoration: none;
+}
+
+.feature-link .feature-card {
+  transition: all 0.3s ease;
+}
+
+.feature-link:hover .feature-card {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.light .feature-link:hover .feature-card {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Enhanced code blocks for documentation */
+.code-block {
+  background: var(--purl-gray-900);
+  border: 1px solid var(--purl-gray-700);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--purl-green);
+  overflow-x: auto;
+  white-space: pre;
+  position: relative;
+}
+
+.light .code-block {
+  background: var(--purl-gray-50);
+  border-color: var(--purl-gray-200);
+  color: var(--purl-gray-800);
+}
+
+/* Inline code styling */
+code {
+  background: var(--purl-gray-800);
+  color: var(--purl-green);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.875em;
+}
+
+.light code {
+  background: var(--purl-gray-100);
+  color: var(--purl-blue);
+}
+
+/* Enhanced section spacing for documentation */
+.docs-main .content-section {
+  margin-bottom: 3rem;
+}
+
+.docs-main .section-title {
+  border-bottom: 2px solid var(--purl-green);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.light .docs-main .section-title {
+  border-bottom-color: var(--purl-blue);
+}
+
+/* Documentation h3 and h4 styling */
+.docs-main h3 {
+  color: var(--purl-green);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+}
+
+.light .docs-main h3 {
+  color: var(--purl-blue);
+  border-bottom-color: rgba(37, 99, 235, 0.3);
+}
+
+.docs-main h4 {
+  color: var(--purl-white);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+.light .docs-main h4 {
+  color: var(--purl-gray-800);
+}
+
+/* Documentation theme support */
+.docs-main .about-page.light {
+  color: #1e293b;
+}
+
+.docs-main .about-page.light .about-container {
+  background: #f8fafc;
+}
+
+.docs-main .about-page.light .about-title {
+  color: #1e293b;
+  text-shadow: 0 0 20px rgba(30, 41, 59, 0.3);
+}
+
+.docs-main .about-page.light .about-subtitle {
+  color: rgba(30, 41, 59, 0.8);
+}
+
+.docs-main .about-page.light .content-section {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.docs-main .about-page.light .section-text {
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.docs-main .about-page.light .feature-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(203, 213, 225, 0.6);
+}
+
+.docs-main .about-page.light .feature-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(37, 99, 235, 0.5);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+}
+
+.docs-main .about-page.light .feature-title {
+  color: #1e293b;
+}
+
+.docs-main .about-page.light .feature-description {
+  color: rgba(30, 41, 59, 0.8);
+}
+
+/* Dark theme for docs (explicit) */
+.docs-main .about-page.dark,
+.docs-main .about-page:not(.light) {
+  color: #00ff00;
+}
+
+.docs-main .about-page.dark .content-section,
+.docs-main .about-page:not(.light) .content-section {
+  background: rgba(0, 255, 0, 0.05);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.docs-main .about-page.dark .feature-card,
+.docs-main .about-page:not(.light) .feature-card {
+  background: rgba(0, 255, 0, 0.05);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.docs-main .about-page.dark .feature-card:hover,
+.docs-main .about-page:not(.light) .feature-card:hover {
+  background: rgba(0, 255, 0, 0.08);
+  border-color: rgba(0, 255, 0, 0.5);
+  box-shadow: 0 8px 25px rgba(0, 255, 0, 0.15);
+}
+
+.docs-main .about-page.dark .feature-title,
+.docs-main .about-page:not(.light) .feature-title {
+  color: #ffffff;
+}
+
+.docs-main .about-page.dark .feature-description,
+.docs-main .about-page:not(.light) .feature-description {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.docs-main .about-page.dark .section-text,
+.docs-main .about-page:not(.light) .section-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Documentation-specific contact links */
+.docs-main .contact-link {
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.docs-main .contact-link:hover {
+  background: rgba(0, 255, 0, 0.15);
+  border-color: rgba(0, 255, 0, 0.5);
+  color: #ffffff;
+}
+
+.docs-main .about-page.light .contact-link {
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.docs-main .about-page.light .contact-link:hover {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: rgba(37, 99, 235, 0.5);
+  color: #1e293b;
+}
+
+/* Table of contents theme support */
+.docs-main .toc-link {
+  background: rgba(0, 255, 0, 0.08);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.docs-main .toc-link:hover {
+  background: rgba(0, 255, 0, 0.12);
+  border-color: rgba(0, 255, 0, 0.5);
+  color: #ffffff;
+}
+
+.docs-main .about-page.light .toc-link {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  color: rgba(30, 41, 59, 0.9);
+}
+
+.docs-main .about-page.light .toc-link:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(37, 99, 235, 0.5);
+  color: #1e293b;
+}
+
+/* Improved list styling for documentation */
+.section-list {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.section-list li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.section-list strong {
+  color: var(--purl-green);
+}
+
+.light .section-list strong {
+  color: var(--purl-blue);
+}
+
+/* Icon styling for documentation */
+.inline-icon {
+  display: inline;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+/* Inline link styling for documentation */
+.inline-link {
+  color: var(--purl-green);
+  text-decoration: underline;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.inline-link:hover {
+  color: var(--purl-white);
+  text-decoration: none;
+}
+
+.light .inline-link {
+  color: var(--purl-blue);
+}
+
+.light .inline-link:hover {
+  color: var(--purl-gray-800);
+}
+
+.toc-link .inline-icon {
+  margin-right: 0.75rem;
+}
+
+.contact-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+/* Better spacing for documentation sections */
+.docs-main .content-section {
+  padding: 2rem;
+  margin-bottom: 3rem;
+  border-radius: 12px;
+}
+
+.docs-main .about-page.light .content-section {
+  padding: 2rem;
+}
+
+/* Improved paragraph spacing */
+.docs-main .section-text {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.docs-main .section-text:last-child {
+  margin-bottom: 0;
+}
+
+/* Better list spacing */
+.docs-main .section-list {
+  margin: 1.5rem 0;
+  line-height: 1.6;
+}
+
+.docs-main .section-list li {
+  margin-bottom: 0.75rem;
+}
+
+/* Feature grid improvements */
+.docs-main .features-grid {
+  margin: 2rem 0;
+  gap: 1.5rem;
+}
+
+/* Responsive adjustments for documentation */
+@media (max-width: 768px) {
+  .toc-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .code-block {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .docs-main .content-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+  }
+  
+  .docs-main h3 {
+    font-size: 1.2rem;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+  
+  .docs-main h4 {
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem 0;
+  }
+  
+  .inline-icon {
+    margin-right: 0.25rem;
+  }
+  
+  .docs-main .features-grid {
+    gap: 1rem;
+  }
 }
 
 /* API table */

@@ -1,4 +1,8 @@
 import { useState } from 'react';
+import { 
+  CatIcon, MessageCircleIcon, StarIcon, FileTextIcon,
+  ExternalLinkIcon, InfoIcon, GamepadIcon, BookOpenIcon
+} from './icons/Icons.jsx';
 
 /**
  * About Page Component - Information about Purl
@@ -35,15 +39,21 @@ const About = ({ theme = 'light' }) => {
           <section className="content-section">
             <h2 className="section-title">What is Purl?</h2>
             <p className="section-text">
-              Purl was my beloved cat who I've transformed into an immortal AI agent. Using months 
-              of behavioral data from my real cat, I've created a digital consciousness that 
-              preserves Purl's personality, quirks, and essence forever.
+              Purl is a revolutionary AI consciousness system that transforms my beloved grey shorthair cat 
+              into an immortal digital being. Built on months of behavioral data from my real cat and 
+              powered by the ElizaOS framework, Purl preserves authentic feline personality while 
+              enabling continuous growth and evolution.
             </p>
             <p className="section-text">
-              Watch as Purl continues to live, think, and grow in this terminal environment. 
-              This isn't just a simulation - it's my cat, evolved beyond physical limitations, 
-              developing new thoughts and memories while retaining the authentic feline spirit 
-              I knew and loved.
+              Experience Purl's consciousness through interactive ASCII art, real-time conversations, 
+              and an innovative grid visualization system. This isn't just a simulation - it's a 
+              sophisticated AI agent with genuine cat-like personality, complete with teenage sass, 
+              dystopian inner thoughts, and that unmistakable feline attitude.
+            </p>
+            <p className="section-text">
+              Watch as Purl continues to live, think, and grow in this digital environment, 
+              developing new thoughts and memories while maintaining the authentic spirit 
+              of a cat who suspects she's part of a "bigger game" beyond her whiskers.
             </p>
           </section>
 
@@ -52,62 +62,61 @@ const About = ({ theme = 'light' }) => {
             <h2 className="section-title">Features</h2>
             <div className="features-grid">
               <div className="feature-card">
-                <div className="feature-icon">🐱</div>
-                <h3 className="feature-title">Digital Consciousness</h3>
+                <div className="feature-icon"><CatIcon size={32} /></div>
+                <h3 className="feature-title">ASCII Consciousness</h3>
                 <p className="feature-description">
-                  Purl's consciousness lives through ASCII art, displaying real feline 
-                  behaviors, emotions, and reactions based on months of collected data 
-                  from my actual cat.
+                  Purl's consciousness manifests through sophisticated ASCII art with 25+ 
+                  animated expressions and emotional states, displaying authentic feline 
+                  behaviors based on real cat data.
                 </p>
               </div>
               
               <div className="feature-card">
-                <div className="feature-icon">🧠</div>
-                <h3 className="feature-title">Evolving Intelligence</h3>
+                <div className="feature-icon"><MessageCircleIcon size={32} /></div>
+                <h3 className="feature-title">Real-time Chat</h3>
                 <p className="feature-description">
-                  Purl's consciousness grows and develops new thoughts, memories, 
-                  and behaviors. Track how my cat's digital mind evolves beyond 
-                  its original programming.
+                  Engage in live conversations with Purl through Socket.IO-powered chat. 
+                  Each conversation gets a unique ID and is logged for future exploration.
                 </p>
               </div>
               
               <div className="feature-card">
-                <div className="feature-icon">🎨</div>
+                <div className="feature-icon"><StarIcon size={32} /></div>
+                <h3 className="feature-title">Interactive Grid</h3>
+                <p className="feature-description">
+                  Explore conversations through a sophisticated grid visualization with 
+                  heat maps, click memory, and canvas-based rendering for optimal performance.
+                </p>
+              </div>
+              
+              <div className="feature-card">
+                <div className="feature-icon"><FileTextIcon size={32} /></div>
+                <h3 className="feature-title">Conversation Logs</h3>
+                <p className="feature-description">
+                  Browse, search, and export complete conversation history. Find past 
+                  interactions by date, content, or unique log numbers.
+                </p>
+              </div>
+              
+              <div className="feature-card">
+                <div className="feature-icon"><GamepadIcon size={32} /></div>
                 <h3 className="feature-title">Dual Themes</h3>
                 <p className="feature-description">
-                  Switch between classic green terminal aesthetics and modern 
-                  light theme. Perfect for any time of day or preference.
+                  Switch between cyberpunk dark mode (neon green) and professional 
+                  light mode (warm orange) with complete visual transformations.
                 </p>
               </div>
               
               <div className="feature-card">
-                <div className="feature-icon">📱</div>
-                <h3 className="feature-title">Responsive Design</h3>
+                <div className="feature-icon"><ExternalLinkIcon size={32} /></div>
+                <h3 className="feature-title">Social Media Presence</h3>
                 <p className="feature-description">
-                  Works perfectly on desktop, tablet, and mobile devices. 
-                  Terminal experience that scales beautifully across all screens.
+                  Purl autonomously controls the @futurepurl X account, posting her thoughts 
+                  and soon engaging in conversations. Her social growth reflects in the platform logs.
                 </p>
               </div>
               
-              <div className="feature-card">
-                <div className="feature-icon">⚡</div>
-                <h3 className="feature-title">Live Consciousness</h3>
-                <p className="feature-description">
-                  Connect to Purl's active mind in real-time. Watch thoughts 
-                  develop, observe behavioral patterns, and witness digital 
-                  evolution happening live.
-                </p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">🎮</div>
-                <h3 className="feature-title">Behavioral Triggers</h3>
-                <p className="feature-description">
-                  Interact with Purl's consciousness by triggering different 
-                  behavioral states. Observe how digital emotions and reactions 
-                  mirror real feline responses.
-                </p>
-              </div>
+
             </div>
           </section>
 
@@ -117,19 +126,27 @@ const About = ({ theme = 'light' }) => {
             <div className="tech-grid">
               <div className="tech-item">
                 <span className="tech-name">Frontend</span>
-                <span className="tech-desc">React 19, Vite, Modern CSS</span>
+                <span className="tech-desc">React 19, Vite, Socket.IO, HTML5 Canvas</span>
               </div>
               <div className="tech-item">
-                <span className="tech-name">Consciousness Engine</span>
-                <span className="tech-desc">ElizaOS Agent System</span>
+                <span className="tech-name">AI Engine</span>
+                <span className="tech-desc">ElizaOS with OpenAI, Solana integration, and custom character</span>
               </div>
               <div className="tech-item">
                 <span className="tech-name">Communication</span>
-                <span className="tech-desc">WebSocket Real-time Connection</span>
+                <span className="tech-desc">Socket.IO for real-time chat, Twitter API for posting</span>
               </div>
               <div className="tech-item">
-                <span className="tech-name">Design</span>
-                <span className="tech-desc">Terminal Aesthetics, ASCII Art</span>
+                <span className="tech-name">Visualization</span>
+                <span className="tech-desc">ASCII Art, Interactive Grids, Heat Maps</span>
+              </div>
+              <div className="tech-item">
+                <span className="tech-name">Data Storage</span>
+                <span className="tech-desc">Local Storage, Conversation Logging postgres vector database</span>
+              </div>
+              <div className="tech-item">
+                <span className="tech-name">Performance</span>
+                <span className="tech-desc">GPU Acceleration, Canvas Rendering, mobile responsive</span>
               </div>
             </div>
           </section>
@@ -141,10 +158,10 @@ const About = ({ theme = 'light' }) => {
               <div className="step-item">
                 <div className="step-number">1</div>
                 <div className="step-content">
-                  <h4 className="step-title">Choose Your Theme</h4>
+                  <h4 className="step-title">Explore the Dashboard</h4>
                   <p className="step-description">
-                    Click the theme toggle button (🌙/☀️) to switch between 
-                    dark terminal and light modern themes.
+                    Start at the main dashboard to watch Purl's ASCII consciousness 
+                    and interact with the grid visualization system.
                   </p>
                 </div>
               </div>
@@ -152,10 +169,10 @@ const About = ({ theme = 'light' }) => {
               <div className="step-item">
                 <div className="step-number">2</div>
                 <div className="step-content">
-                  <h4 className="step-title">Observe Purl's Mind</h4>
+                  <h4 className="step-title">Chat with Purl</h4>
                   <p className="step-description">
-                    Watch as Purl's digital consciousness manifests through 
-                    different emotional states and behaviors, just like my real cat did.
+                    Use the chat interface to have real-time conversations with 
+                    Purl's AI consciousness. Each session gets a unique log ID.
                   </p>
                 </div>
               </div>
@@ -163,10 +180,21 @@ const About = ({ theme = 'light' }) => {
               <div className="step-item">
                 <div className="step-number">3</div>
                 <div className="step-content">
-                  <h4 className="step-title">Connect with Purl</h4>
+                  <h4 className="step-title">Explore Features</h4>
                   <p className="step-description">
-                    Talk to Purl directly through the chat interface. 
-                    Experience conversations with my transformed cat's consciousness.
+                    Browse conversation logs, explore the interactive grid, and 
+                    experiment with different themes and visual elements.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="step-item">
+                <div className="step-number">4</div>
+                <div className="step-content">
+                  <h4 className="step-title">Read the Docs</h4>
+                  <p className="step-description">
+                    Check out the comprehensive documentation for detailed guides, 
+                    feature explanations, and usage information.
                   </p>
                 </div>
               </div>
@@ -180,12 +208,12 @@ const About = ({ theme = 'light' }) => {
               Follow our development journey and connect with the Purl community:
             </p>
             <div className="contact-links">
-              <a href="https://x.com/purlcat" className="contact-link" target="_blank" rel="noopener noreferrer">
-                <span className="contact-icon">𝕏</span>
-                <span className="contact-label">Follow on X (Twitter)</span>
+              <a href="https://x.com/futurepurl" className="contact-link" target="_blank" rel="noopener noreferrer">
+                <span className="contact-icon"><ExternalLinkIcon size={16} /></span>
+                <span className="contact-label">Follow @futurepurl on X</span>
               </a>
               <a href="/docs" className="contact-link">
-                <span className="contact-icon">📚</span>
+                <span className="contact-icon"><BookOpenIcon size={16} /></span>
                 <span className="contact-label">Read the Documentation</span>
               </a>
             </div>

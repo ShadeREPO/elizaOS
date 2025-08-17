@@ -263,6 +263,160 @@ export const BookOpenIcon = ({ size = 16, className }) => (
   </Svg>
 );
 
+// Additional icons for documentation
+export const RocketIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const BuildingIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M6 12H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M18 9h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M10 6h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M10 10h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M10 14h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M10 18h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </Svg>
+);
+
+export const GamepadIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <line x1="6" y1="12" x2="18" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="16" cy="8" r="1" fill="currentColor" />
+    <circle cx="8" cy="16" r="1" fill="currentColor" />
+  </Svg>
+);
+
+export const StarIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const CatIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    {/* Cat ears */}
+    <path d="M6 6L8 2l2 4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M14 6l2-4 2 4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    {/* Cat head */}
+    <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="2" fill="none" />
+    {/* Cat eyes */}
+    <circle cx="9" cy="10" r="1" fill="currentColor" />
+    <circle cx="15" cy="10" r="1" fill="currentColor" />
+    {/* Cat nose */}
+    <path d="M12 13l-1 1 1 1 1-1-1-1z" fill="currentColor" />
+    {/* Cat whiskers */}
+    <path d="M6 12h2M16 12h2M7 10h2M15 10h2M7 14h2M15 14h2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+  </Svg>
+);
+
+export const WrenchIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const CodeIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <polyline points="16,18 22,12 16,6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <polyline points="8,6 2,12 8,18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const PhoneIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const ListIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </Svg>
+);
+
+export const UserIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
+  </Svg>
+);
+
+export const CpuIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
+    <rect x="9" y="9" width="6" height="6" stroke="currentColor" strokeWidth="2" fill="none" />
+    <line x1="9" y1="1" x2="9" y2="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="15" y1="1" x2="15" y2="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="9" y1="20" x2="9" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="15" y1="20" x2="15" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="20" y1="9" x2="23" y2="9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="20" y1="14" x2="23" y2="14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="1" y1="9" x2="4" y2="9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="1" y1="14" x2="4" y2="14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </Svg>
+);
+
+export const SettingsIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="none" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const MoonIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const SunIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2" fill="none" />
+    <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </Svg>
+);
+
+export const ExternalLinkIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <polyline points="15,3 21,3 21,9" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </Svg>
+);
+
+export const RobotIcon = ({ size = 16, className }) => (
+  <Svg size={size} className={className}>
+    <rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" strokeWidth="2" fill="none" />
+    <circle cx="12" cy="5" r="2" stroke="currentColor" strokeWidth="2" fill="none" />
+    <path d="M12 7v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="8" y1="21" x2="8" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <line x1="16" y1="21" x2="16" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="9" cy="15" r="1" fill="currentColor" />
+    <circle cx="15" cy="15" r="1" fill="currentColor" />
+  </Svg>
+);
+
 export default {
   MonitorIcon,
   GlobeIcon,
@@ -294,6 +448,23 @@ export default {
   FileTextIcon,
   TerminalIcon,
   BookOpenIcon,
+  // New documentation icons
+  RocketIcon,
+  BuildingIcon,
+  GamepadIcon,
+  StarIcon,
+  CatIcon,
+  WrenchIcon,
+  CodeIcon,
+  PhoneIcon,
+  ListIcon,
+  UserIcon,
+  CpuIcon,
+  SettingsIcon,
+  MoonIcon,
+  SunIcon,
+  ExternalLinkIcon,
+  RobotIcon,
 };
 
 

@@ -427,12 +427,12 @@ function AgentChatSocket({ theme = 'dark' }) {
                     )}
                     {connected && socketReady && !agentReady && (
                       <p className="empty-status">
-                        💬 Say hello to wake up Purl! The first message will activate the chat.
+                        Say hello to wake up Purl! The first message will activate the chat.
                       </p>
                     )}
                     {connected && socketReady && agentReady && (
                       <p className="empty-status">
-                        ✅ Purl is ready to chat! They may choose to reply, ignore, or take other actions.
+                        Purl is ready to chat! They may choose to reply, ignore, or take other actions.
                       </p>
                     )}
                   </div>
@@ -474,9 +474,9 @@ function AgentChatSocket({ theme = 'dark' }) {
                                 
                                 {msg.status && msg.status !== 'sending' && (
                                   <span className="message-status">
-                                    {msg.status === 'delivered' && '✓'}
-                                    {msg.status === 'error' && '❌'}
-                                    {msg.status === 'thinking' && '💭'}
+                                    {msg.status === 'delivered' && ''}
+                                    {msg.status === 'error' && 'Error'}
+                                    {msg.status === 'thinking' && 'Thinking...'}
                                   </span>
                                 )}
                                 
@@ -659,7 +659,7 @@ function AgentChatSocket({ theme = 'dark' }) {
               </div>
 
               {/* Message Input */}
-              <div className="chat-input-container">
+              <div className={`chat-input-container ${canSendMessage() && connected && socketReady ? 'ready-for-input' : ''}`}>
                 <form onSubmit={handleSubmit} className="chat-input-form">
                   <input
                     ref={inputRef}
@@ -699,26 +699,7 @@ function AgentChatSocket({ theme = 'dark' }) {
             </div>
       </main>
 
-      {/* Action Info Panel (Collapsible) */}
-      <div className="action-info-panel">
-        <details className="actions-details">
-          <summary className="actions-summary">
-            <span className="info-icon">ℹ️</span>
-            <span>Purl's Actions</span>
-          </summary>
-          <div className="actions-content">
-            <p>Purl can choose different response actions:</p>
-            <ul className="actions-list">
-              <li><strong>REPLY:</strong> Responds with a message</li>
-              <li><strong>IGNORE:</strong> Chooses not to respond</li>
-              <li><strong>GENERATE_IMAGE:</strong> Creates an image</li>
-              <li><strong>UPDATE_CONTACT:</strong> Updates contact info</li>
-              <li><strong>MUTE_ROOM:</strong> Mutes conversation</li>
-              <li><strong>NONE:</strong> Acknowledges without response</li>
-            </ul>
-          </div>
-        </details>
-      </div>
+
     </div>
   );
 }
