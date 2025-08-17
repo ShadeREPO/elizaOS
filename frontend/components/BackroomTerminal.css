@@ -642,6 +642,12 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1023px) {
+  .backroom-terminal .conversation-selector {
+    display: block; /* Re-enable conversation selector on mobile */
+  }
+}
+
 @media (max-width: 768px) {
   .backroom-terminal {
     font-size: 12px;

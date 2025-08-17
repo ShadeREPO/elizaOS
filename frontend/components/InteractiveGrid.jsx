@@ -213,8 +213,8 @@ const InteractiveGrid = ({
     // Define message count tiers with distinct colors
     let tierInfo;
     
-    if (messageCount >= 50) {
-      // Tier 5: 50+ messages - Epic/Legendary (Purple/Magenta)
+    if (messageCount >= 25) {
+      // Tier 5: 25+ messages - Epic/Legendary (Purple/Magenta)
       tierInfo = {
         tier: 5,
         name: 'Epic',
@@ -223,8 +223,8 @@ const InteractiveGrid = ({
         opacity: 1.0,
         glowIntensity: 1.2
       };
-    } else if (messageCount >= 30) {
-      // Tier 4: 30-49 messages - High Activity (Blue/Cyan)
+    } else if (messageCount >= 15) {
+      // Tier 4: 15-24 messages - High Activity (Blue/Cyan)
       tierInfo = {
         tier: 4,
         name: 'High Activity',
@@ -233,8 +233,8 @@ const InteractiveGrid = ({
         opacity: 0.95,
         glowIntensity: 1.0
       };
-    } else if (messageCount >= 20) {
-      // Tier 3: 20-29 messages - Active (Yellow/Gold)
+    } else if (messageCount >= 10) {
+      // Tier 3: 10-14 messages - Active (Yellow/Gold)
       tierInfo = {
         tier: 3,
         name: 'Active',
@@ -243,8 +243,8 @@ const InteractiveGrid = ({
         opacity: 0.9,
         glowIntensity: 0.8
       };
-    } else if (messageCount >= 10) {
-      // Tier 2: 10-19 messages - Moderate (Green/Lime)
+    } else if (messageCount >= 4) {
+      // Tier 2: 4-9 messages - Moderate (Green/Lime)
       tierInfo = {
         tier: 2,
         name: 'Moderate',
@@ -254,7 +254,7 @@ const InteractiveGrid = ({
         glowIntensity: 0.7
       };
     } else {
-      // Tier 1: 1-9 messages - Light Activity (Orange/Amber)
+      // Tier 1: 1-3 messages - Light Activity (Orange/Amber)
       tierInfo = {
         tier: 1,
         name: 'Light Activity',

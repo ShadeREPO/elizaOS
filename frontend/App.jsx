@@ -7,6 +7,7 @@ import TerminalHeader from './components/TerminalHeader.jsx';
 import Footer from './components/Footer.jsx';
 import BottomNavigation from './components/BottomNavigation.jsx';
 import FloatingChatButton from './components/FloatingChatButton.jsx';
+import MaintenancePage from './components/MaintenancePage.jsx';
 
 import About from './components/About.jsx';
 import Docs from './components/Docs.jsx';
@@ -28,6 +29,9 @@ import Terminal from './components/Terminal.jsx';
  * - Integration with ElizaOS agent system
  */
 function PurlApp() {
+  // Check for maintenance mode from environment variables
+  const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true';
+  
   // Theme state for consistent theming across components
   const [currentTheme, setCurrentTheme] = useState(() => {
     const savedTheme = localStorage.getItem('purl-theme') || localStorage.getItem('purl-fullscreen-theme');
@@ -47,6 +51,19 @@ function PurlApp() {
     document.body.className = document.body.className.replace(/\b(light|dark)\b/g, '').trim();
     document.body.classList.add(currentTheme);
   }, [currentTheme]);
+
+  // If maintenance mode is enabled, show only the maintenance page
+  if (isMaintenanceMode) {
+    return (
+      <ElizaMemoriesProvider agentId="40608b6b-63b6-0e2c-b819-9d9850d060ec">
+        <ChatDataProvider agentId="40608b6b-63b6-0e2c-b819-9d9850d060ec">
+          <div className="purl-app maintenance-mode">
+            <MaintenancePage theme={currentTheme} />
+          </div>
+        </ChatDataProvider>
+      </ElizaMemoriesProvider>
+    );
+  }
 
   return (
             <ElizaMemoriesProvider agentId="40608b6b-63b6-0e2c-b819-9d9850d060ec">

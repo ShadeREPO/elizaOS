@@ -484,7 +484,9 @@
   font-size: 0.8rem;
 }
 
-.status-indicator {
+/* Generic status indicator for footer and other components */
+.app-footer .status-indicator,
+.header .status-indicator {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -4953,4 +4955,311 @@ code {
   color: #00ff00;
   text-shadow: 0 0 3px #00ff00;
   box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+}
+
+/* ===== MAINTENANCE PAGE STYLES ===== */
+
+/* Maintenance Page Container */
+.maintenance-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 9999; /* Above everything else */
+  overflow: hidden;
+}
+
+/* Blurred Background */
+.maintenance-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(8px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.maintenance-background .ascii-container {
+  filter: blur(2px);
+}
+
+.maintenance-background .ascii-cat {
+  opacity: 0.6;
+}
+
+/* Maintenance Overlay - Centered Content */
+.maintenance-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+
+.maintenance-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 3rem 2rem;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00ff88;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3);
+  backdrop-filter: blur(16px);
+  animation: maintenanceGlow 3s ease-in-out infinite alternate;
+}
+
+/* Explicit dark theme styles */
+.maintenance-page.fullscreen-dark .maintenance-content,
+.maintenance-page:not(.fullscreen-light) .maintenance-content {
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00ff88;
+  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3);
+}
+
+.maintenance-page.fullscreen-dark .maintenance-overlay,
+.maintenance-page:not(.fullscreen-light) .maintenance-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Maintenance Logo */
+.maintenance-logo {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maintenance-logo-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.6));
+  animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+/* Maintenance Title */
+.maintenance-title {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-size: 2.5rem;
+  color: #00ff88;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  font-weight: bold;
+}
+
+/* Maintenance Message */
+.maintenance-message {
+  margin-bottom: 2rem;
+}
+
+.maintenance-message p {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Status Indicator */
+.maintenance-status {
+  margin-bottom: 2rem;
+}
+
+/* Default maintenance page status indicator */
+.maintenance-page .status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  color: #00ff88;
+  font-size: 1rem;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  background: #00ff88;
+  border-radius: 50%;
+  animation: statusPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+}
+
+/* Contact Info */
+.maintenance-contact {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  color: #cccccc;
+  font-size: 0.95rem;
+}
+
+.maintenance-link {
+  color: #00ff88;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.maintenance-link:hover {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+}
+
+/* Light Theme Overrides */
+.maintenance-page.fullscreen-light .maintenance-content {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: #ba8259 !important;
+  box-shadow: 0 8px 32px rgba(186, 130, 89, 0.3) !important;
+}
+
+.maintenance-page.fullscreen-light .maintenance-logo-image {
+  filter: drop-shadow(0 0 20px rgba(186, 130, 89, 0.6));
+  animation: logoGlowLight 3s ease-in-out infinite alternate;
+}
+
+.maintenance-page.fullscreen-light .maintenance-title {
+  color: #ba8259;
+  text-shadow: 0 0 10px rgba(186, 130, 89, 0.5);
+}
+
+.maintenance-page.fullscreen-light .status-indicator {
+  color: #ba8259 !important;
+  text-shadow: 0 0 10px rgba(186, 130, 89, 0.5);
+}
+
+.maintenance-page.fullscreen-light .maintenance-message p {
+  color: #333333;
+}
+
+.maintenance-page.fullscreen-light .status-dot {
+  background: #ba8259;
+  box-shadow: 0 0 10px rgba(186, 130, 89, 0.6);
+  animation: statusPulseLight 2s ease-in-out infinite;
+}
+
+.maintenance-page.fullscreen-light .maintenance-link {
+  color: #ba8259;
+}
+
+.maintenance-page.fullscreen-light .maintenance-link:hover {
+  color: #8b4513;
+  text-shadow: 0 0 8px rgba(186, 130, 89, 0.8);
+}
+
+.maintenance-page.fullscreen-light .maintenance-overlay {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Animations */
+@keyframes maintenanceGlow {
+  0% {
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3);
+  }
+  100% {
+    box-shadow: 0 12px 48px rgba(0, 255, 136, 0.5);
+  }
+}
+
+@keyframes logoGlow {
+  0% {
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.6));
+  }
+  100% {
+    filter: drop-shadow(0 0 30px rgba(0, 255, 136, 0.8));
+  }
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* Light theme animation overrides */
+.maintenance-page.fullscreen-light .maintenance-content {
+  animation: maintenanceGlowLight 3s ease-in-out infinite alternate;
+}
+
+@keyframes maintenanceGlowLight {
+  0% {
+    box-shadow: 0 8px 32px rgba(186, 130, 89, 0.3);
+  }
+  100% {
+    box-shadow: 0 12px 48px rgba(186, 130, 89, 0.5);
+  }
+}
+
+@keyframes logoGlowLight {
+  0% {
+    filter: drop-shadow(0 0 20px rgba(186, 130, 89, 0.6));
+  }
+  100% {
+    filter: drop-shadow(0 0 30px rgba(186, 130, 89, 0.8));
+  }
+}
+
+@keyframes statusPulseLight {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    background: #ba8259;
+    box-shadow: 0 0 10px rgba(186, 130, 89, 0.6);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+    background: #ba8259;
+    box-shadow: 0 0 15px rgba(186, 130, 89, 0.8);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .maintenance-content {
+    max-width: 90%;
+    padding: 2rem 1.5rem;
+  }
+  
+  .maintenance-title {
+    font-size: 2rem;
+  }
+  
+  .maintenance-logo-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .maintenance-message p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .maintenance-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  .maintenance-title {
+    font-size: 1.75rem;
+  }
+  
+  .maintenance-logo-image {
+    width: 80px;
+    height: 80px;
+  }
 }
