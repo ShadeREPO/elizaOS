@@ -6,7 +6,8 @@ import {
   TerminalIcon, 
   InfoIcon,
   AngelIcon,
-  DevilIcon
+  DevilIcon,
+  GridIcon
 } from './icons/Icons.jsx';
 
 /**
@@ -32,9 +33,15 @@ const BottomNavigation = ({ theme = 'dark', onThemeChange }) => {
   const navItems = [
     {
       path: '/',
-      icon: HomeIcon,
-      label: 'Home',
-      title: 'Go to home - Watch Purl\'s consciousness'
+      icon: GridIcon,
+      label: 'Dash',
+      title: 'Watch Purl\'s consciousness dashboard'
+    },
+    {
+      path: '/about',
+      icon: InfoIcon,
+      label: 'About',
+      title: 'Learn more about Purl'
     },
     {
       path: '/chat',
@@ -53,12 +60,6 @@ const BottomNavigation = ({ theme = 'dark', onThemeChange }) => {
       icon: TerminalIcon,
       label: 'Terminal',
       title: 'Live agent surveillance feed'
-    },
-    {
-      path: '/about',
-      icon: InfoIcon,
-      label: 'About',
-      title: 'Learn more about Purl'
     }
   ];
 

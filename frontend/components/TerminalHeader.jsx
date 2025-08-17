@@ -142,6 +142,20 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
         {/* Center Section - Navigation Links (Desktop) */}
         <nav className="header-nav desktop-nav">
           <Link 
+            to="/" 
+            className="nav-link"
+            title="Watch Purl's consciousness dashboard"
+          >
+            Dash
+          </Link>
+          <Link 
+            to="/about" 
+            className="nav-link"
+            title="Learn more about Purl"
+          >
+            About
+          </Link>
+          <Link 
             to="/chat" 
             className="nav-link"
             title="Chat with Purl agent"
@@ -161,13 +175,6 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
             title="Live agent surveillance feed"
           >
             Terminal
-          </Link>
-          <Link 
-            to="/about" 
-            className="nav-link"
-            title="Learn more about Purl"
-          >
-            About
           </Link>
           <a 
             href="/docs" 
