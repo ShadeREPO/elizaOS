@@ -67,10 +67,10 @@ const Footer = ({ theme = 'dark' }) => {
         {/* Bottom section - Copyright */}
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <span>© {currentYear} Purl.cat - My cat's digital consciousness</span>
+            <span>© {currentYear} Purl.cat</span>
           </div>
           <div className="footer-info">
-            <span>Built on Solana, with Grok</span>
+            <span>Built on Solana, with ElizaOS</span>
           </div>
         </div>
       </div>
