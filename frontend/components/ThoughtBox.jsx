@@ -107,16 +107,7 @@ const ThoughtBox = ({
           <div className="thought-tail">{thoughtTail}</div>
         </div>
 
-        {/* Thought status indicator - only show animated dots when thinking */}
-        {isTyping && (
-          <div className="thought-status">
-            <span className="status-indicator typing">
-              <span className="dot"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
-            </span>
-          </div>
-        )}
+
       </div>
     </div>
   );
