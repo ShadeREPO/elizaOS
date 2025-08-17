@@ -185,41 +185,81 @@ function AgentChatSocket({ theme = 'dark' }) {
     });
   };
 
-  // Get action-specific message content and styling
+  // Enhanced action-specific message content and styling with better UX
   const getActionMessageInfo = (action) => {
     switch (action) {
       case 'IGNORE':
         return {
-          content: "Purl has chosen to ignore your message. They might be busy or not interested in this topic right now.",
+          content: "Purl has decided to ignore this message",
+          subtitle: "They might be busy or not interested in this topic right now",
           icon: "😴",
-          className: "agent-ignore"
+          progressIcon: "💤",
+          className: "agent-ignore",
+          actionType: "ignore",
+          duration: "instant"
         };
       case 'GENERATE_IMAGE':
         return {
-          content: "Purl is generating an image for you...",
+          content: "Purl is creating an image for you",
+          subtitle: "This may take a few moments while AI generates your image...",
           icon: "🎨",
-          className: "agent-action"
+          progressIcon: "✨",
+          className: "agent-action generating-image",
+          actionType: "create",
+          duration: "long",
+          animated: true
         };
       case 'UPDATE_CONTACT':
         return {
-          content: "Purl is updating contact information...",
+          content: "Purl is updating contact information",
+          subtitle: "Processing your contact details...",
           icon: "📝",
-          className: "agent-action"
+          progressIcon: "💾",
+          className: "agent-action updating-contact",
+          actionType: "update",
+          duration: "short"
         };
       case 'MUTE_ROOM':
         return {
-          content: "Purl has muted this conversation.",
+          content: "Purl has muted this conversation",
+          subtitle: "No further responses will be given until unmuted",
           icon: "🔇",
-          className: "agent-mute"
+          progressIcon: "🔕",
+          className: "agent-mute",
+          actionType: "mute",
+          duration: "instant"
         };
       case 'NONE':
         return {
-          content: "Purl received your message but chose not to respond.",
+          content: "Purl acknowledged your message",
+          subtitle: "They chose not to respond this time",
           icon: "🤐",
-          className: "agent-none"
+          progressIcon: "👁️",
+          className: "agent-none",
+          actionType: "acknowledge",
+          duration: "instant"
+        };
+      case 'REPLY':
+        return {
+          content: "Purl is crafting a response",
+          subtitle: "They're thinking about what to say...",
+          icon: "💭",
+          progressIcon: "✍️",
+          className: "agent-reply",
+          actionType: "reply",
+          duration: "medium",
+          animated: true
         };
       default:
-        return null;
+        return {
+          content: `Purl is performing: ${action}`,
+          subtitle: "Processing your request...",
+          icon: "🤖",
+          progressIcon: "⚡",
+          className: "agent-action",
+          actionType: "custom",
+          duration: "medium"
+        };
     }
   };
 
@@ -316,15 +356,38 @@ function AgentChatSocket({ theme = 'dark' }) {
               </span>
             </div>
             
-            {/* Agent Action Status */}
-            {lastAgentAction && lastAgentAction !== 'REPLY' && (
-              <div className="agent-action-status">
-                <span className="action-status-icon">
-                  {getActionMessageInfo(lastAgentAction)?.icon || '🤖'}
-                </span>
-                <span className="action-status-text">
-                  {lastAgentAction.replace('_', ' ')}
-                </span>
+            {/* Enhanced Agent Action Status */}
+            {(lastAgentAction || isThinking) && (
+              <div className={`agent-action-status ${isThinking ? 'thinking' : ''} ${lastAgentAction ? lastAgentAction.toLowerCase() : ''}`}>
+                <div className="action-status-icon-container">
+                  <span className="action-status-icon">
+                    {isThinking ? '💭' : (getActionMessageInfo(lastAgentAction)?.icon || '🤖')}
+                  </span>
+                  {(isThinking || (lastAgentAction && getActionMessageInfo(lastAgentAction)?.animated)) && (
+                    <span className="action-status-progress">
+                      {isThinking ? '✨' : (getActionMessageInfo(lastAgentAction)?.progressIcon || '⚡')}
+                    </span>
+                  )}
+                </div>
+                <div className="action-status-details">
+                  <span className="action-status-text">
+                    {isThinking ? 'Thinking...' : 
+                     lastAgentAction === 'REPLY' ? 'Responding' :
+                     getActionMessageInfo(lastAgentAction)?.content || lastAgentAction?.replace('_', ' ')}
+                  </span>
+                  <span className="action-status-subtitle">
+                    {isThinking ? 'Purl is processing your message' :
+                     lastAgentAction === 'GENERATE_IMAGE' ? 'Creating your image...' :
+                     lastAgentAction === 'IGNORE' ? 'Chose not to respond' :
+                     lastAgentAction === 'NONE' ? 'Message acknowledged' :
+                     'Action in progress'}
+                  </span>
+                </div>
+                {(isThinking || (lastAgentAction && getActionMessageInfo(lastAgentAction)?.duration !== 'instant')) && (
+                  <div className="action-status-indicator">
+                    <div className="status-pulse"></div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -422,9 +485,39 @@ function AgentChatSocket({ theme = 'dark' }) {
                                 </div>
                               </div>
                             ) : isActionMessage ? (
-                              <div className="action-message">
-                                <span className="action-icon">{actionInfo.icon}</span>
-                                <span className="action-text">{actionInfo.content}</span>
+                              <div className={`action-message ${actionInfo.className} ${actionInfo.animated ? 'animated' : ''}`}>
+                                <div className="action-header">
+                                  <div className="action-icon-container">
+                                    <span className="action-icon">{actionInfo.icon}</span>
+                                    {actionInfo.animated && (
+                                      <span className="action-progress-icon">{actionInfo.progressIcon}</span>
+                                    )}
+                                  </div>
+                                  <div className="action-details">
+                                    <div className="action-title">{actionInfo.content}</div>
+                                    {actionInfo.subtitle && (
+                                      <div className="action-subtitle">{actionInfo.subtitle}</div>
+                                    )}
+                                  </div>
+                                  <div className="action-status">
+                                    <span className={`status-badge ${actionInfo.actionType}`}>
+                                      {actionInfo.actionType}
+                                    </span>
+                                  </div>
+                                </div>
+                                
+                                {actionInfo.duration !== 'instant' && (
+                                  <div className="action-progress">
+                                    <div className={`progress-bar ${actionInfo.duration}`}>
+                                      <div className="progress-fill"></div>
+                                    </div>
+                                    <span className="progress-text">
+                                      {actionInfo.duration === 'long' ? 'This may take a moment...' :
+                                       actionInfo.duration === 'medium' ? 'Processing...' : 
+                                       'Working...'}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
                             ) : (
                               <div className="message-text-content">
