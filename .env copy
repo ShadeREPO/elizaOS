@@ -1,0 +1,41 @@
+
+OPENROUTER_API_KEY=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
+OPENAI_API_KEY=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
+PGLITE_DATA_DIR=./.eliza/.elizadb
+ALLOWED_ORIGINS=https://eliza-os-sooty.vercel.app
+API_KEY=UIxtS%cen8KGBN*3uHO6q0+rjozsaEM9
+API_ONLY_MODE=false
+AUTO_BACKUP_ENABLED=true
+NODE_ENV=production
+PORT=3000
+POSTGRES_URL=postgresql://postgres:ooza0lo8laox5l1zgu84p6e5xwyyrnbv@yamabiko.proxy.rlwy.net:45442/railway
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_MAX_REQUESTS=100
+RATE_LIMIT_WINDOW_MS=900000
+SECURE_COOKIES=true
+STREAMING_ENABLED=true
+VERBOSE_LOGGING=false
+CHARACTER_NAME=Purl
+
+# Configure your text generation provider
+TEXT_PROVIDER=openai
+
+# REQUIRED: OAuth 1.0a Credentials (from "Consumer Keys" section)
+TWITTER_API_KEY=8H5A3AjCv3WAcU978oyIbCR6c
+TWITTER_API_SECRET_KEY=gaaSnSEaaAJEQ7TccwbnYd5lCldLVdk8ux1a5u4TIhltNIoNkY
+TWITTER_ACCESS_TOKEN=1869942408982462464-2gegHWXAD3cm43cWdKSLrj46I3PrPO
+TWITTER_ACCESS_TOKEN_SECRET=EPckx1rWUCplM90T88aVLlYsTsAOo1PXeuwAH1WtlBJer
+
+# Basic Configuration
+TWITTER_DRY_RUN=false              # Set to true to test without posting
+TWITTER_ENABLE_POST=true           # Enable autonomous tweet posting
+
+# Optional: Posting Configuration
+TWITTER_POST_IMMEDIATELY=true      # Post on startup (great for testing)
+TWITTER_POST_INTERVAL=120          # Minutes between posts (default: 120)
+# For more natural timing, use MIN/MAX intervals:
+TWITTER_POST_INTERVAL_MIN=90       # Minimum minutes between posts  
+TWITTER_POST_INTERVAL_MAX=150      # Maximum minutes between posts
+
+TWITTER_SEARCH_ENABLE=false
+TWITTER_ENABLE_ACTION_PROCESSING=false

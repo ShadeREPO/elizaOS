@@ -20,8 +20,8 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  // Example contract address - replace with actual address
-  const contractAddress = "0x1234567890abcdef1234567890abcdef12345678";
+  // Contract address from environment variable with fallback
+  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || "0x1234567890abcdef1234567890abcdef12345678";
   
   /**
    * Toggle mobile menu and handle body scroll
