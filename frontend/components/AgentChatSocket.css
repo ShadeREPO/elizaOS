@@ -2520,6 +2520,55 @@
   overflow: hidden;
 }
 
+/* Inline Action Messages within Chat Flow */
+.action-message-container {
+  /* Style action messages as agent messages in the chat flow */
+  margin-right: auto;
+  margin-left: 8px;
+  float: left;
+  border-bottom-left-radius: 4px;
+  max-width: 75%;
+  background: var(--agent-message-bg, rgba(139, 92, 246, 0.1));
+  border: 2px solid var(--agent-message-border, rgba(139, 92, 246, 0.3));
+}
+
+.inline-action-message {
+  /* Remove extra styling since the parent message container handles it */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.action-content-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.action-text-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.action-badge {
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--accent-color);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .action-message.animated {
   animation: action-appear 0.5s ease-out;
 }
@@ -2737,6 +2786,58 @@
   }
 }
 
+/* Specific action message types in chat flow */
+.action-message-container.generating-image {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.action-message-container.agent-ignore {
+  background: rgba(107, 114, 128, 0.1);
+  border-color: rgba(107, 114, 128, 0.4);
+}
+
+.action-message-container.agent-none {
+  background: rgba(156, 163, 175, 0.1);
+  border-color: rgba(156, 163, 175, 0.4);
+}
+
+.action-message-container.agent-reply {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* New Socket.IO event types */
+.action-started {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.action-complete {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.action-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.action-error-details {
+  font-size: 13px;
+  color: #ef4444;
+  margin-top: 4px;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #ef4444;
+}
+
+.progress-percentage {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
 /* Light theme adjustments for action elements */
 .fullscreen-chat-container.light .agent-action-status {
   background: rgba(186, 130, 89, 0.1);
@@ -2753,6 +2854,21 @@
   background: linear-gradient(135deg, rgba(186, 130, 89, 0.05) 0%, rgba(156, 109, 66, 0.05) 100%);
 }
 
+.fullscreen-chat-container.light .action-message-container {
+  background: rgba(186, 130, 89, 0.1);
+  border-color: rgba(186, 130, 89, 0.4);
+}
+
+.fullscreen-chat-container.light .action-message-container.generating-image {
+  background: rgba(186, 130, 89, 0.15);
+  border-color: rgba(186, 130, 89, 0.5);
+}
+
+.fullscreen-chat-container.light .action-badge {
+  background: rgba(186, 130, 89, 0.2);
+  color: #ba8259;
+}
+
 .fullscreen-chat-container.light .status-badge.create {
   background: rgba(186, 130, 89, 0.2);
   color: #ba8259;
@@ -2764,6 +2880,31 @@
 
 .fullscreen-chat-container.light .status-pulse {
   background: #ba8259;
+}
+
+.fullscreen-chat-container.light .action-started {
+  background: rgba(186, 130, 89, 0.1);
+  border-color: rgba(186, 130, 89, 0.4);
+}
+
+.fullscreen-chat-container.light .action-complete {
+  background: rgba(186, 130, 89, 0.15);
+  border-color: rgba(186, 130, 89, 0.5);
+}
+
+.fullscreen-chat-container.light .action-error {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.fullscreen-chat-container.light .action-error-details {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.05);
+  border-left-color: #dc2626;
+}
+
+.fullscreen-chat-container.light .progress-percentage {
+  color: #ba8259;
 }
 
 /* Mobile responsiveness for action elements */

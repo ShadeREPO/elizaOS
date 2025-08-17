@@ -875,7 +875,210 @@ function useElizaSocketIO(agentId, userId) {
         }
       });
 
-      // Listen for action status responses
+      // Listen for comprehensive Socket.IO events for real-time agent status
+      
+      // Listen for thinking/processing control messages
+      socket.on('controlMessage', (data) => {
+        log('🧠 Control message received:', data);
+        
+        if (data.type === 'thinking') {
+          log('💭 Agent started thinking');
+          setIsThinking(true);
+          
+          // Add a thinking message to the chat
+          const thinkingMessage = {
+            id: generateUUID(),
+            content: data.message || 'Purl is thinking about your message...',
+            authorId: agentId,
+            isAgent: true,
+            createdAt: new Date(),
+            metadata: { 
+              systemType: 'thinking',
+              realTime: true,
+              source: 'control_message'
+            },
+            isThinking: true
+          };
+          
+          setMessages(prev => {
+            const withoutThinking = prev.filter(msg => !msg.isThinking);
+            return [...withoutThinking, thinkingMessage];
+          });
+          
+        } else if (data.type === 'complete') {
+          log('✅ Agent thinking complete');
+          setIsThinking(false);
+          
+          // Remove thinking messages
+          setMessages(prev => prev.filter(msg => !msg.isThinking));
+        }
+      });
+
+      // Listen for action started events
+      socket.on('actionStarted', (data) => {
+        log('🚀 Action started:', data);
+        
+        setLastAgentAction(data.action);
+        
+        // Create detailed status message based on action type
+        let statusMessage = '';
+        let statusIcon = '🤖';
+        
+        switch (data.action) {
+          case 'GENERATE_IMAGE':
+            statusMessage = 'Purl is creating your image...';
+            statusIcon = '🎨';
+            break;
+          case 'WEB_SEARCH':
+            statusMessage = 'Purl is searching the web...';
+            statusIcon = '🔍';
+            break;
+          case 'ANALYZE_IMAGE':
+            statusMessage = 'Purl is analyzing the image...';
+            statusIcon = '👁️';
+            break;
+          case 'WRITE_CODE':
+            statusMessage = 'Purl is writing code...';
+            statusIcon = '💻';
+            break;
+          case 'TRANSLATE':
+            statusMessage = 'Purl is translating...';
+            statusIcon = '🌐';
+            break;
+          case 'SUMMARIZE':
+            statusMessage = 'Purl is summarizing...';
+            statusIcon = '📝';
+            break;
+          case 'IGNORE':
+            statusMessage = 'Purl has decided to ignore this message';
+            statusIcon = '😴';
+            break;
+          case 'NONE':
+            statusMessage = 'Purl acknowledged your message';
+            statusIcon = '🤐';
+            break;
+          default:
+            statusMessage = `Purl is performing: ${data.action}`;
+            statusIcon = '⚡';
+            break;
+        }
+        
+        const actionStartMessage = {
+          id: generateUUID(),
+          content: statusMessage,
+          authorId: 'system',
+          isAgent: false,
+          createdAt: new Date(),
+          metadata: { 
+            systemType: 'action_started',
+            agentAction: data.action,
+            actionData: data,
+            realTime: true,
+            source: 'action_started',
+            statusIcon: statusIcon
+          },
+          isSystem: true
+        };
+        
+        setMessages(prev => {
+          const withoutThinking = prev.filter(msg => !msg.isThinking);
+          return [...withoutThinking, actionStartMessage];
+        });
+      });
+
+      // Listen for action complete events
+      socket.on('actionComplete', (data) => {
+        log('✅ Action completed:', data);
+        
+        // Clear the last action if it matches
+        if (data.action === lastAgentAction) {
+          setLastAgentAction(null);
+        }
+        
+        // Optionally add a completion message for long-running actions
+        if (data.action === 'GENERATE_IMAGE' || data.action === 'WEB_SEARCH') {
+          const completionMessage = {
+            id: generateUUID(),
+            content: `Purl completed: ${data.action.toLowerCase().replace('_', ' ')}`,
+            authorId: 'system',
+            isAgent: false,
+            createdAt: new Date(),
+            metadata: { 
+              systemType: 'action_complete',
+              agentAction: data.action,
+              actionData: data,
+              realTime: true,
+              source: 'action_complete'
+            },
+            isSystem: true
+          };
+          
+          setMessages(prev => [...prev, completionMessage]);
+        }
+      });
+
+      // Listen for action progress updates
+      socket.on('actionProgress', (data) => {
+        log('📊 Action progress:', data);
+        
+        // Update existing action messages with progress
+        setMessages(prev => {
+          return prev.map(msg => {
+            if (msg.metadata?.systemType === 'action_started' && 
+                msg.metadata?.agentAction === data.action) {
+              return {
+                ...msg,
+                metadata: {
+                  ...msg.metadata,
+                  progress: data.progress,
+                  progressMessage: data.message
+                }
+              };
+            }
+            return msg;
+          });
+        });
+      });
+
+      // Listen for action error events
+      socket.on('actionError', (data) => {
+        log('❌ Action error:', data);
+        
+        const errorMessage = {
+          id: generateUUID(),
+          content: `Purl encountered an error: ${data.error || 'Unknown error'}`,
+          authorId: 'system',
+          isAgent: false,
+          createdAt: new Date(),
+          metadata: { 
+            systemType: 'action_error',
+            agentAction: data.action,
+            error: data.error,
+            realTime: true,
+            source: 'action_error'
+          },
+          isSystem: true
+        };
+        
+        setMessages(prev => [...prev, errorMessage]);
+        
+        // Clear the action state
+        setLastAgentAction(null);
+        setIsThinking(false);
+      });
+
+      // Listen for agent status updates
+      socket.on('agentStatus', (data) => {
+        log('📡 Agent status update:', data);
+        
+        if (data.status === 'ready') {
+          setAgentReady(true);
+        } else if (data.status === 'busy') {
+          setAgentReady(false);
+        }
+      });
+
+      // Listen for action status responses (keep existing for compatibility)
       socket.on('actionStatusResponse', (data) => {
         log('🤖 Action status response received:', data);
         

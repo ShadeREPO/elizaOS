@@ -439,87 +439,121 @@ function AgentChatSocket({ theme = 'dark' }) {
                 ) : (
                   <div className="messages-list">
                     {messages.map((msg) => {
-                      // Check if this is a system message with agent action
+                      // Check if this is a system message with agent action (including new event types)
                       const actionInfo = msg.metadata?.agentAction ? getActionMessageInfo(msg.metadata.agentAction) : null;
                       const isActionMessage = actionInfo && msg.isSystem;
                       
+                      // Handle special system message types from new Socket.IO events
+                      const isActionStarted = msg.metadata?.systemType === 'action_started';
+                      const isActionComplete = msg.metadata?.systemType === 'action_complete';
+                      const isActionError = msg.metadata?.systemType === 'action_error';
+                      
                       return (
-                        <div key={msg.id} className={`message ${
-                          msg.isAgent ? 'agent-message' : msg.isSystem ? 'system-message' : 'user-message'
-                        } ${msg.isThinking ? 'thinking' : ''} ${isActionMessage ? actionInfo.className : ''}`}
-                             data-system-type={msg.metadata?.systemType || ''}>
-                          
-                          {!msg.isSystem && (
-                            <div className="message-header">
-                              <span className="message-author">
-                                {msg.isAgent ? 'Purl' : 'You'}
-                              </span>
-                              
-                              {msg.status && msg.status !== 'sending' && (
-                                <span className="message-status">
-                                  {msg.status === 'delivered' && '✓'}
-                                  {msg.status === 'error' && '❌'}
-                                  {msg.status === 'thinking' && '💭'}
+                        <div key={msg.id} className="message-wrapper">
+                          <div className={`message ${
+                            msg.isAgent ? 'agent-message' : msg.isSystem ? 'system-message action-message-container' : 'user-message'
+                          } ${msg.isThinking ? 'thinking' : ''} ${isActionMessage ? actionInfo.className : ''}`}
+                               data-system-type={msg.metadata?.systemType || ''}>
+                            
+                            {/* Show Purl header for system action messages */}
+                            {(isActionMessage || isActionStarted || isActionComplete || isActionError) ? (
+                              <div className="message-header">
+                                <span className="message-author">Purl</span>
+                                <span className="message-badge action-badge">
+                                  {isActionError ? '❌ error' :
+                                   isActionComplete ? '✅ complete' :
+                                   msg.metadata?.statusIcon ? `${msg.metadata.statusIcon} ${msg.metadata.agentAction?.toLowerCase()}` :
+                                   actionInfo ? `${actionInfo.icon} ${actionInfo.actionType}` : '🤖 action'}
                                 </span>
-                              )}
-                              
-                              {msg.metadata?.realTime && (
-                                <span className="message-badge realtime">⚡ Live</span>
-                              )}
-                              
-                              {msg.metadata?.direct && (
-                                <span className="message-badge api">📡 API</span>
-                              )}
-                            </div>
-                          )}
-                          
-                          {/* Message Content */}
-                          <div className="message-content">
-                            {msg.isThinking ? (
-                              <div className="typing-indicator">
-                                <span>{msg.content}</span>
-                                <div className="typing-dots">
-                                  <span></span>
-                                  <span></span>
-                                  <span></span>
-                                </div>
                               </div>
-                            ) : isActionMessage ? (
-                              <div className={`action-message ${actionInfo.className} ${actionInfo.animated ? 'animated' : ''}`}>
-                                <div className="action-header">
-                                  <div className="action-icon-container">
-                                    <span className="action-icon">{actionInfo.icon}</span>
-                                    {actionInfo.animated && (
-                                      <span className="action-progress-icon">{actionInfo.progressIcon}</span>
-                                    )}
-                                  </div>
-                                  <div className="action-details">
-                                    <div className="action-title">{actionInfo.content}</div>
-                                    {actionInfo.subtitle && (
-                                      <div className="action-subtitle">{actionInfo.subtitle}</div>
-                                    )}
-                                  </div>
-                                  <div className="action-status">
-                                    <span className={`status-badge ${actionInfo.actionType}`}>
-                                      {actionInfo.actionType}
-                                    </span>
-                                  </div>
-                                </div>
+                            ) : !msg.isSystem && (
+                              <div className="message-header">
+                                <span className="message-author">
+                                  {msg.isAgent ? 'Purl' : 'You'}
+                                </span>
                                 
-                                {actionInfo.duration !== 'instant' && (
-                                  <div className="action-progress">
-                                    <div className={`progress-bar ${actionInfo.duration}`}>
-                                      <div className="progress-fill"></div>
-                                    </div>
-                                    <span className="progress-text">
-                                      {actionInfo.duration === 'long' ? 'This may take a moment...' :
-                                       actionInfo.duration === 'medium' ? 'Processing...' : 
-                                       'Working...'}
-                                    </span>
-                                  </div>
+                                {msg.status && msg.status !== 'sending' && (
+                                  <span className="message-status">
+                                    {msg.status === 'delivered' && '✓'}
+                                    {msg.status === 'error' && '❌'}
+                                    {msg.status === 'thinking' && '💭'}
+                                  </span>
+                                )}
+                                
+                                {msg.metadata?.realTime && (
+                                  <span className="message-badge realtime">⚡ Live</span>
+                                )}
+                                
+                                {msg.metadata?.direct && (
+                                  <span className="message-badge api">📡 API</span>
                                 )}
                               </div>
-                            ) : (
+                            )}
+                            
+                            {/* Message Content */}
+                            <div className="message-content">
+                              {msg.isThinking ? (
+                                <div className="typing-indicator">
+                                  <span>{msg.content}</span>
+                                  <div className="typing-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </div>
+                                </div>
+                              ) : (isActionMessage || isActionStarted || isActionComplete || isActionError) ? (
+                                <div className={`inline-action-message ${
+                                  isActionError ? 'action-error' : 
+                                  isActionComplete ? 'action-complete' :
+                                  actionInfo?.className || 'action-started'
+                                } ${(actionInfo?.animated || isActionStarted) ? 'animated' : ''}`}>
+                                  <div className="action-content-header">
+                                    <div className="action-icon-container">
+                                      <span className="action-icon">
+                                        {isActionError ? '❌' :
+                                         isActionComplete ? '✅' :
+                                         msg.metadata?.statusIcon || actionInfo?.icon || '🤖'}
+                                      </span>
+                                      {(actionInfo?.animated || isActionStarted) && !isActionComplete && !isActionError && (
+                                        <span className="action-progress-icon">
+                                          {actionInfo?.progressIcon || '✨'}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="action-text-content">
+                                      <div className="action-title">
+                                        {msg.content}
+                                      </div>
+                                      {(actionInfo?.subtitle && !isActionStarted && !isActionComplete && !isActionError) && (
+                                        <div className="action-subtitle">{actionInfo.subtitle}</div>
+                                      )}
+                                      {isActionError && msg.metadata?.error && (
+                                        <div className="action-error-details">Error: {msg.metadata.error}</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {((actionInfo?.duration !== 'instant' && !isActionComplete && !isActionError) || 
+                                    (isActionStarted && msg.metadata?.agentAction === 'GENERATE_IMAGE')) && (
+                                    <div className="action-progress">
+                                      <div className={`progress-bar ${actionInfo?.duration || 'medium'}`}>
+                                        <div className="progress-fill" style={{
+                                          width: msg.metadata?.progress ? `${msg.metadata.progress}%` : undefined
+                                        }}></div>
+                                      </div>
+                                      <span className="progress-text">
+                                        {msg.metadata?.progressMessage || 
+                                         (actionInfo?.duration === 'long' ? 'This may take a moment...' :
+                                          actionInfo?.duration === 'medium' ? 'Processing...' : 
+                                          'Working...')}
+                                        {msg.metadata?.progress && (
+                                          <span className="progress-percentage"> ({msg.metadata.progress}%)</span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
                               <div className="message-text-content">
                                 {msg.content}
                                 
@@ -588,12 +622,13 @@ function AgentChatSocket({ theme = 'dark' }) {
                             )}
                           </div>
                           
-                          {/* Timestamp */}
-                          {!msg.isSystem && (
-                            <div className="message-timestamp">
-                              {formatTime(msg.createdAt)}
-                            </div>
-                          )}
+                            {/* Timestamp */}
+                            {!msg.isSystem || isActionMessage || isActionStarted || isActionComplete || isActionError ? (
+                              <div className="message-timestamp">
+                                {formatTime(msg.createdAt)}
+                              </div>
+                            ) : null}
+                          </div>
                         </div>
                       );
                     })}
