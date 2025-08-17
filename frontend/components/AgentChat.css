@@ -1,6 +1,18 @@
-/* AgentChat Component Styles - Using About Page Layout */
+/* AgentChat Component Styles - DEPRECATED
+ * 
+ * ⚠️  IMPORTANT: This file has been consolidated into AgentChatSocket.css
+ * 
+ * All chat-related styles are now managed in a single file:
+ * - AgentChatSocket.css (main consolidated chat stylesheet)
+ * 
+ * This file is kept for backwards compatibility but should be removed
+ * once all components are updated to import AgentChatSocket.css instead.
+ * 
+ * The styles below are duplicated in AgentChatSocket.css under the 
+ * "About Page Embedded Chat" section.
+ */
 
-/* Chat-specific extensions to About page styles */
+/* LEGACY: Chat-specific extensions to About page styles */
 
 /* Chat Box Container */
 .chat-box {
@@ -25,7 +37,6 @@
   flex: 1;
   overflow-y: auto;
   min-height: 400px;
-  max-height: 70vh;
   margin-bottom: 1rem;
   padding: 0.5rem;
 }

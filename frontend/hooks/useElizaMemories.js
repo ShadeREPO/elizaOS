@@ -302,6 +302,18 @@ function useElizaMemories(agentId) {
           source: memory.content.source || 'unknown',
           inReplyTo: memory.content.inReplyTo || null,
           
+          // Attachments - extract from content.attachments (Eliza format) or fallback to memory.attachments
+          attachments: (memory.content && memory.content.attachments) || memory.attachments || [],
+          
+          // Metadata including attachments
+          metadata: {
+            agentId: memory.agentId,
+            entityId: memory.entityId,
+            attachments: (memory.content && memory.content.attachments) || memory.attachments || [],
+            agentAction: memory.content.agentAction || null,
+            thought: memory.content.thought || null
+          },
+          
           // Terminal formatting
           logNumber: generateLogNumber(memory.createdAt, memory.id),
           terminalLine: formatAsTerminalLine(memory, isAgentMessage),

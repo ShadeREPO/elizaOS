@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import useElizaSession from '../hooks/useElizaSession.js';
 import useConversationStorage from '../hooks/useConversationStorage.js';
 import AsciiCat from './AsciiCat.jsx';
-import './AgentChat.css';
+import './AgentChatSocket.css';
 
 /**
  * AgentChat Component
@@ -218,9 +218,8 @@ function AgentChat({ theme = 'dark' }) {
                       {msg.isAgent ? 'Purl' : 'You'}
                     </span>
                     
-                    {msg.status && (
+                    {msg.status && msg.status !== 'sending' && (
                       <span className="message-status">
-                        {msg.status === 'sending' && '⏳'}
                         {msg.status === 'delivered' && '✓'}
                         {msg.status === 'error' && '❌'}
                         {msg.status === 'thinking' && '💭'}

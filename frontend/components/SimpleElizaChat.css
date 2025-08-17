@@ -1,4 +1,18 @@
-/* Simple ElizaOS Chat Component Styles */
+/* Simple ElizaOS Chat Component Styles - DEPRECATED
+ * 
+ * ⚠️  IMPORTANT: This file has been consolidated into AgentChatSocket.css
+ * 
+ * All chat-related styles are now managed in a single file:
+ * - AgentChatSocket.css (main consolidated chat stylesheet)
+ * 
+ * This file is kept for backwards compatibility but should be removed
+ * once all components are updated to import AgentChatSocket.css instead.
+ * 
+ * The styles below are duplicated in AgentChatSocket.css under the 
+ * "Simple Chat Interface" section.
+ */
+
+/* LEGACY: Simple ElizaOS Chat Component Styles */
 
 .simple-eliza-chat {
   display: flex;

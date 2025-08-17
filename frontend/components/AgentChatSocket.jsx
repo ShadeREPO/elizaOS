@@ -271,71 +271,52 @@ function AgentChatSocket({ theme = 'dark' }) {
   };
 
   return (
-    <div className={`about-page ${theme}`}>
-      <div className="about-container">
-        {/* Header Section */}
-        <header className="about-header">
-          <div className="about-logo">
-            <h1 className="about-title">Chat to Purl</h1>
+    <div className={`fullscreen-chat-container ${theme}`}>
+      {/* Fixed Header */}
+      <header className="chat-header">
+        <div className="header-content">
+          <div className="chat-title-section">
+            <h1 className="chat-title">Chat with Purl</h1>
+            <p className="chat-subtitle">
+              Real-time AI conversation
+            </p>
           </div>
-          <p className="about-subtitle">
-            Real-time connection to Purl's consciousness. Experience live conversations with my immortal cat's digital mind. Each user has a unique chat history with Purl.
-          </p>
           
-          {/* Agent Action Status Indicator */}
-          {lastAgentAction && lastAgentAction !== 'REPLY' && (
-            <div className="agent-action-status">
-              <span className="action-status-icon">
-                {getActionMessageInfo(lastAgentAction)?.icon || '🤖'}
-              </span>
-              <span className="action-status-text">
-                Last action: {lastAgentAction.replace('_', ' ')}
+          {/* Connection Status */}
+          <div className="connection-status">
+            <div className={`status-indicator ${connected ? 'connected' : 'disconnected'}`}>
+              <div className="status-dot animate-pulse"></div>
+              <span className="status-text">
+                {!connected ? 'Connecting...' : !socketReady ? 'Initializing...' : 'Connected'}
               </span>
             </div>
-          )}
-        </header>
-
-        {/* Agent Response Actions Info */}
-        <div className="agent-actions-info">
-          <details className="actions-details">
-            <summary className="actions-summary">
-              <span className="info-icon">ℹ️</span>
-              <span>Purl's Response Actions</span>
-            </summary>
-            <div className="actions-content">
-              <p>Purl can choose different actions when responding to your messages:</p>
-              <ul className="actions-list">
-                <li><strong>REPLY:</strong> Purl responds with a message</li>
-                <li><strong>IGNORE:</strong> Purl chooses not to respond</li>
-                <li><strong>GENERATE_IMAGE:</strong> Purl creates an image for you</li>
-                <li><strong>UPDATE_CONTACT:</strong> Purl updates contact information</li>
-                <li><strong>MUTE_ROOM:</strong> Purl mutes the conversation</li>
-                <li><strong>NONE:</strong> Purl acknowledges but doesn't respond</li>
-              </ul>
-            </div>
-          </details>
-        </div>
-
-        {/* Main Chat Content */}
-        <main className="about-content">
-
-          
-          {/* Status Messages */}
-          {error && (
-            <div className="content-section">
-              <div className="error-message">
-                <span className="error-icon">❌</span>
-                <span className="error-text">{error}</span>
+            
+            {/* Agent Action Status */}
+            {lastAgentAction && lastAgentAction !== 'REPLY' && (
+              <div className="agent-action-status">
+                <span className="action-status-icon">
+                  {getActionMessageInfo(lastAgentAction)?.icon || '🤖'}
+                </span>
+                <span className="action-status-text">
+                  {lastAgentAction.replace('_', ' ')}
+                </span>
               </div>
-            </div>
-          )}
-          
+            )}
+          </div>
+        </div>
+        
+        {/* Error Display */}
+        {error && (
+          <div className="header-error">
+            <span className="error-icon">❌</span>
+            <span className="error-text">{error}</span>
+          </div>
+        )}
+      </header>
 
-
-          {/* Chat Messages Section */}
-          <section className="content-section">
-            <h2 className="section-title">Conversation</h2>
-            <div className="chat-box socket-chat">
+      {/* Main Chat Area */}
+      <main className="chat-main">
+        <div className="chat-box socket-chat fullscreen">
               <div className="messages-container">
                 {messages.length === 0 ? (
                   <div className="empty-state">
@@ -386,9 +367,8 @@ function AgentChatSocket({ theme = 'dark' }) {
                                 {msg.isAgent ? 'Purl' : 'You'}
                               </span>
                               
-                              {msg.status && (
+                              {msg.status && msg.status !== 'sending' && (
                                 <span className="message-status">
-                                  {msg.status === 'sending' && '⏳'}
                                   {msg.status === 'delivered' && '✓'}
                                   {msg.status === 'error' && '❌'}
                                   {msg.status === 'thinking' && '💭'}
@@ -558,11 +538,27 @@ function AgentChatSocket({ theme = 'dark' }) {
                 </form>
               </div>
             </div>
-          </section>
+      </main>
 
-        </main>
-
-
+      {/* Action Info Panel (Collapsible) */}
+      <div className="action-info-panel">
+        <details className="actions-details">
+          <summary className="actions-summary">
+            <span className="info-icon">ℹ️</span>
+            <span>Purl's Actions</span>
+          </summary>
+          <div className="actions-content">
+            <p>Purl can choose different response actions:</p>
+            <ul className="actions-list">
+              <li><strong>REPLY:</strong> Responds with a message</li>
+              <li><strong>IGNORE:</strong> Chooses not to respond</li>
+              <li><strong>GENERATE_IMAGE:</strong> Creates an image</li>
+              <li><strong>UPDATE_CONTACT:</strong> Updates contact info</li>
+              <li><strong>MUTE_ROOM:</strong> Mutes conversation</li>
+              <li><strong>NONE:</strong> Acknowledges without response</li>
+            </ul>
+          </div>
+        </details>
       </div>
     </div>
   );
