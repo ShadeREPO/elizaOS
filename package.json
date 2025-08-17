@@ -31,7 +31,6 @@
     "@elizaos/core": "latest",
     "@elizaos/plugin-bootstrap": "latest",
     "@elizaos/plugin-giphy": "^1.0.5",
-    "@elizaos/plugin-knowledge": "^1.2.2",
     "@elizaos/plugin-openai": "^1.0.10",
     "@elizaos/plugin-openrouter": "^1.2.6",
     "@elizaos/plugin-sql": "latest",
