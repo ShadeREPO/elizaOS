@@ -130,10 +130,35 @@ function AgentChatSocket({ theme = 'dark' }) {
     };
   }, [currentConversation, endConversation]);
 
+  // Check if user can send a message (Purl must have replied to the last user message)
+  const canSendMessage = () => {
+    if (!connected || !socketReady || loading || isThinking) return false;
+    
+    // If no messages yet, user can send first message
+    if (messages.length === 0) return true;
+    
+    // Find the last user message
+    const userMessages = messages.filter(msg => !msg.isAgent && !msg.isSystem);
+    if (userMessages.length === 0) return true; // No user messages yet
+    
+    const lastUserMessage = userMessages[userMessages.length - 1];
+    
+    // Find messages after the last user message
+    const lastUserIndex = messages.findLastIndex(msg => msg.id === lastUserMessage.id);
+    const messagesAfterLastUser = messages.slice(lastUserIndex + 1);
+    
+    // Check if Purl has responded with any non-system message
+    const purlHasReplied = messagesAfterLastUser.some(msg => 
+      msg.isAgent && !msg.isSystem
+    );
+    
+    return purlHasReplied;
+  };
+
   // Handle message submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim() || loading || !socketReady) return;
+    if (!message.trim() || !canSendMessage()) return;
     
     const messageToSend = message.trim();
     setMessage('');
@@ -519,21 +544,27 @@ function AgentChatSocket({ theme = 'dark' }) {
                         ? "Waking up Purl..." 
                         : !socketReady
                         ? "Connecting to Purl..."
+                        : isThinking
+                        ? "Purl is thinking..."
+                        : !canSendMessage() && messages.length > 0
+                        ? "Wait for Purl to reply..."
                         : !agentReady
                         ? "Say hello to wake up Purl! (First message will activate the chat)"
                         : "Say hello to Purl..."
                     }
-                    disabled={!connected || !socketReady || loading}
+                    disabled={!canSendMessage()}
                     className="message-input"
                     autoComplete="off"
                   />
                   
                   <button
                     type="submit"
-                    disabled={!message.trim() || !connected || !socketReady || loading}
+                    disabled={!message.trim() || !canSendMessage()}
                     className="send-button"
                   >
-                    {loading ? 'Sending...' : 'Send'}
+                    {loading ? 'Sending...' : 
+                     isThinking ? 'Thinking...' :
+                     !canSendMessage() && messages.length > 0 ? 'Wait...' : 'Send'}
                   </button>
                 </form>
               </div>
