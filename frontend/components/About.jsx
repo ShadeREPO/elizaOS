@@ -57,6 +57,60 @@ const About = ({ theme = 'light' }) => {
             </p>
           </section>
 
+          {/* Donations Made Section */}
+          <section className="content-section">
+            <h2 className="section-title">Donations Made</h2>
+            <p className="section-text">
+              As promised, all pump.fun creator rewards are being donated anonymously to pet and cat charities. 
+              Here's a transparent record of our charitable contributions:
+            </p>
+            <div className="donations-list">
+              <div className="donation-item">
+                <div className="donation-header">
+                  <div className="donation-amount">
+                    <span className="sol-amount">14 SOL</span>
+                    <span className="usd-amount">≈ $2,750 USD</span>
+                  </div>
+                  <div className="donation-date">18th August 2025</div>
+                </div>
+                <div className="donation-details">
+                  <div className="donation-recipient">
+                    <span className="recipient-label">Donated to:</span>
+                    <a 
+                      href="https://thegivingblock.com/donate/neighborhood-cats/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="recipient-link"
+                    >
+                      <span className="contact-icon"><ExternalLinkIcon size={14} /></span>
+                      Neighborhood Cats
+                    </a>
+                  </div>
+                  <div className="donation-description">
+                    Supporting feral and stray cats with spay/neuter programs, veterinary care, 
+                    and assistance for caretakers in NYC, Jersey City, and Maui.
+                  </div>
+                  <div className="donation-transaction">
+                    <span className="transaction-label">Transaction:</span>
+                    <a 
+                      href="https://solscan.io/tx/w2yNB77WWPUi4HXytdyWJm6wjDG72Sdq4koXZzRVmm13GA7ksMagNmWR1ioexMtGMUewT8T5TpdTKBsTrnKqiw6" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="transaction-link"
+                    >
+                      <span className="contact-icon"><ExternalLinkIcon size={14} /></span>
+                      View on Solscan
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="section-text">
+              <em>More donations will be added to this list as they are made. 
+              All contributions are funded exclusively by pump.fun creator rewards from Purl's token.</em>
+            </p>
+          </section>
+
           {/* Features Section */}
           <section className="content-section">
             <h2 className="section-title">Features</h2>
