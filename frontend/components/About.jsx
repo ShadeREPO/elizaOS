@@ -105,17 +105,42 @@ const About = ({ theme = 'light' }) => {
                 </div>
               </div>
               
-              <div className="donation-card coming-soon">
+              <div className="donation-card">
                 <div className="donation-header">
                   <div className="donation-amount">
-                    <span className="sol-amount">---</span>
-                    <span className="usd-amount">Donation Coming Soon</span>
+                    <span className="sol-amount">10 SOL</span>
+                    <span className="usd-amount">≈ $1,800 USD (at the time of tx)</span>
                   </div>
-                  <div className="donation-date">TBA</div>
+                  <div className="donation-date">18th August 2025</div>
                 </div>
                 <div className="donation-details">
+                  <div className="donation-recipient">
+                    <span className="recipient-label">Donated to:</span>
+                    <a 
+                      href="https://edch.org.uk/cryptocurrency-donations/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="recipient-link"
+                    >
+                      <span className="contact-icon"><ExternalLinkIcon size={14} /></span>
+                      Edinburgh Dog and Cat Home
+                    </a>
+                  </div>
                   <div className="donation-description">
-                    Another charitable contribution will be made soon as more pump.fun creator rewards are collected.
+                    Supporting over 140 years of animal welfare work, providing shelter, rehoming services, 
+                    and essential care for abandoned dogs and cats in Edinburgh.
+                  </div>
+                  <div className="donation-transaction">
+                    <span className="transaction-label">Transaction:</span>
+                    <a 
+                      href="https://solscan.io/tx/4yJcb3b7yWLiUTzFruUbeUhR4w6Mp8dhyWDNQhSa2JLKHaSaC2AgZGnMRH9cQ6mKsxwkaMUTULbASxm7GQv1D4s2" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="transaction-link"
+                    >
+                      <span className="contact-icon"><ExternalLinkIcon size={14} /></span>
+                      View on Solscan
+                    </a>
                   </div>
                 </div>
               </div>
