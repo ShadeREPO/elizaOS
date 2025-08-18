@@ -5077,6 +5077,89 @@ code {
   margin-bottom: 2rem;
 }
 
+/* Traffic Alert */
+.traffic-alert {
+  background: rgba(255, 193, 7, 0.1);
+  border-bottom: 1px solid #ffc107;
+  padding: 8px 0;
+  position: fixed;
+  top: var(--header-height, 60px);
+  left: 0;
+  right: 0;
+  z-index: 900;
+  backdrop-filter: blur(10px);
+}
+
+.traffic-alert-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.traffic-alert-icon {
+  color: #ffc107;
+  display: flex;
+  align-items: center;
+}
+
+.traffic-alert-message {
+  color: #ffc107;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Light theme overrides for traffic alert */
+.traffic-alert.light {
+  background: rgba(255, 152, 0, 0.1);
+  border-bottom-color: #ff9800;
+}
+
+.traffic-alert.light .traffic-alert-icon,
+.traffic-alert.light .traffic-alert-message {
+  color: #ff9800;
+}
+
+/* Responsive design for traffic alert */
+@media (max-width: 768px) {
+  .traffic-alert-message {
+    font-size: 12px;
+  }
+  
+  .traffic-alert-container {
+    padding: 0 15px;
+  }
+}
+
+/* Maintenance Social Links */
+.maintenance-social {
+  margin-top: 25px;
+}
+
+.maintenance-x-link {
+  display: inline-block;
+  padding: 12px 24px;
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid var(--purl-green);
+  border-radius: 8px;
+  color: var(--purl-green);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.maintenance-x-link:hover {
+  background: rgba(0, 255, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
+}
+
 /* Default maintenance page status indicator */
 .maintenance-page .status-indicator {
   display: flex;
@@ -5158,6 +5241,17 @@ code {
 
 .maintenance-page.fullscreen-light .maintenance-overlay {
   background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.maintenance-page.fullscreen-light .maintenance-x-link {
+  background: rgba(186, 130, 89, 0.1) !important;
+  border-color: #ba8259 !important;
+  color: #ba8259 !important;
+}
+
+.maintenance-page.fullscreen-light .maintenance-x-link:hover {
+  background: rgba(186, 130, 89, 0.2) !important;
+  box-shadow: 0 4px 15px rgba(186, 130, 89, 0.3) !important;
 }
 
 /* Animations */

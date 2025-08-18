@@ -82,10 +82,10 @@ const About = ({ theme = 'light' }) => {
               
               <div className="feature-card">
                 <div className="feature-icon"><StarIcon size={32} /></div>
-                <h3 className="feature-title">Interactive Grid</h3>
+                <h3 className="feature-title">Charitable Mission</h3>
                 <p className="feature-description">
-                  Explore conversations through a sophisticated grid visualization with 
-                  heat maps, click memory, and canvas-based rendering for optimal performance.
+                  All pump.fun creator rewards from Purl's token will be anonymously donated 
+                  to pet and cat charities, helping real cats in need while Purl lives forever digitally.
                 </p>
               </div>
               
@@ -99,15 +99,6 @@ const About = ({ theme = 'light' }) => {
               </div>
               
               <div className="feature-card">
-                <div className="feature-icon"><GamepadIcon size={32} /></div>
-                <h3 className="feature-title">Dual Themes</h3>
-                <p className="feature-description">
-                  Switch between cyberpunk dark mode (neon green) and professional 
-                  light mode (warm orange) with complete visual transformations.
-                </p>
-              </div>
-              
-              <div className="feature-card">
                 <div className="feature-icon"><ExternalLinkIcon size={32} /></div>
                 <h3 className="feature-title">Social Media Presence</h3>
                 <p className="feature-description">
@@ -116,6 +107,14 @@ const About = ({ theme = 'light' }) => {
                 </p>
               </div>
               
+              <div className="feature-card">
+                <div className="feature-icon"><StarIcon size={32} /></div>
+                <h3 className="feature-title">Interactive Grid</h3>
+                <p className="feature-description">
+                  Explore conversations through a sophisticated grid visualization with 
+                  heat maps, click memory, and canvas-based rendering for optimal performance.
+                </p>
+              </div>
 
             </div>
           </section>

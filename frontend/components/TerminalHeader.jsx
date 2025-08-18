@@ -23,6 +23,10 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
   // Contract address from environment variable with fallback
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || "0x1234567890abcdef1234567890abcdef12345678";
   
+  // High traffic alert from environment variable
+  const showTrafficAlert = import.meta.env.VITE_SHOW_TRAFFIC_ALERT === 'true';
+  const trafficAlertMessage = import.meta.env.VITE_TRAFFIC_ALERT_MESSAGE || "Experiencing high traffic - response times may be slower than usual";
+  
   /**
    * Toggle mobile menu and handle body scroll
    */
@@ -117,8 +121,9 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
   };
 
   return (
-    <header className={`terminal-header ${theme}`}>
-      <div className="terminal-header-container">
+    <>
+      <header className={`terminal-header ${theme}`}>
+        <div className="terminal-header-container">
         {/* Left Section - Logo, Site Name, and Connection Status */}
         <div className="header-brand">
           <Link to="/" className="brand-logo">
@@ -387,7 +392,22 @@ const TerminalHeader = ({ theme = 'dark', onThemeChange }) => {
           </div>
         </div>
       </nav>
-    </header>
+      </header>
+      
+      {/* High Traffic Alert */}
+      {showTrafficAlert && (
+        <div className={`traffic-alert ${theme}`}>
+          <div className="traffic-alert-container">
+            <div className="traffic-alert-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L1 21h22L12 2zm0 3.6L19.8 19H4.2L12 5.6zm-1 10.4h2v2h-2v-2zm0-6h2v4h-2V10z"/>
+              </svg>
+            </div>
+            <span className="traffic-alert-message">{trafficAlertMessage}</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

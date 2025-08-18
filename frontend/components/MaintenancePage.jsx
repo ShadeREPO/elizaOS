@@ -137,6 +137,19 @@ const MaintenancePage = ({ theme = 'dark' }) => {
             </div>
           </div>
           
+          {/* Follow X Account Link */}
+          {import.meta.env.VITE_X_USERNAME && (
+            <div className="maintenance-social">
+              <a 
+                href={`https://x.com/${import.meta.env.VITE_X_USERNAME}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="maintenance-x-link"
+              >
+                Follow @{import.meta.env.VITE_X_USERNAME} for updates
+              </a>
+            </div>
+          )}
 
         </div>
       </div>
