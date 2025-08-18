@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { ChatDataProvider } from './contexts/ChatDataContext.jsx';
 import { ElizaMemoriesProvider } from './contexts/ElizaMemoriesContext.jsx';
 import CatDisplay from './components/CatDisplay.jsx';
@@ -59,6 +60,7 @@ function PurlApp() {
         <ChatDataProvider agentId="40608b6b-63b6-0e2c-b819-9d9850d060ec">
           <div className="purl-app maintenance-mode">
             <MaintenancePage theme={currentTheme} />
+            <Analytics />
           </div>
         </ChatDataProvider>
       </ElizaMemoriesProvider>
@@ -147,6 +149,9 @@ function PurlApp() {
         }}>
           Purl - AI Virtual Pet Terminal | purl.cat
         </h1>
+        
+        {/* Vercel Analytics */}
+        <Analytics />
         </div>
         </Router>
       </ChatDataProvider>
