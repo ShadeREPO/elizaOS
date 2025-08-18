@@ -69,7 +69,7 @@ const About = ({ theme = 'light' }) => {
                 <div className="donation-header">
                   <div className="donation-amount">
                     <span className="sol-amount">14 SOL</span>
-                    <span className="usd-amount">≈ $2,750 USD</span>
+                    <span className="usd-amount">≈ $2,550 USD (at the time of tx)</span>
                   </div>
                   <div className="donation-date">18th August 2025</div>
                 </div>
