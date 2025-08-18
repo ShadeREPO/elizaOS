@@ -2195,6 +2195,9 @@ html.about-page {
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 .terminal-header-container {
