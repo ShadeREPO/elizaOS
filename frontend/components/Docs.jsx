@@ -434,7 +434,7 @@ const Docs = ({ theme = 'dark' }) => {
                 <span className="contact-icon"><InfoIcon size={16} /></span>
                 <span className="contact-label">About Purl's Story</span>
               </Link>
-              <a href="https://elizaos.dev" className="contact-link" target="_blank" rel="noopener noreferrer">
+              <a href="https://elizaos.ai" className="contact-link" target="_blank" rel="noopener noreferrer">
                 <span className="contact-icon"><RobotIcon size={16} /></span>
                 <span className="contact-label">ElizaOS Framework</span>
               </a>
