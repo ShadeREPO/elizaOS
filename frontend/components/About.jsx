@@ -64,8 +64,8 @@ const About = ({ theme = 'light' }) => {
               As promised, all pump.fun creator rewards are being donated anonymously to pet and cat charities. 
               Here's a transparent record of our charitable contributions:
             </p>
-            <div className="donations-list">
-              <div className="donation-item">
+            <div className="donations-grid">
+              <div className="donation-card">
                 <div className="donation-header">
                   <div className="donation-amount">
                     <span className="sol-amount">14 SOL</span>
@@ -101,6 +101,36 @@ const About = ({ theme = 'light' }) => {
                       <span className="contact-icon"><ExternalLinkIcon size={14} /></span>
                       View on Solscan
                     </a>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="donation-card coming-soon">
+                <div className="donation-header">
+                  <div className="donation-amount">
+                    <span className="sol-amount">---</span>
+                    <span className="usd-amount">Donation Coming Soon</span>
+                  </div>
+                  <div className="donation-date">TBA</div>
+                </div>
+                <div className="donation-details">
+                  <div className="donation-description">
+                    Another charitable contribution will be made soon as more pump.fun creator rewards are collected.
+                  </div>
+                </div>
+              </div>
+              
+              <div className="donation-card coming-soon">
+                <div className="donation-header">
+                  <div className="donation-amount">
+                    <span className="sol-amount">---</span>
+                    <span className="usd-amount">Donation Coming Soon</span>
+                  </div>
+                  <div className="donation-date">TBA</div>
+                </div>
+                <div className="donation-details">
+                  <div className="donation-description">
+                    We're committed to regular donations as Purl's token generates more creator rewards.
                   </div>
                 </div>
               </div>

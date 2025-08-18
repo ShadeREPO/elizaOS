@@ -5362,16 +5362,49 @@ code {
 }
 
 /* Donations Section */
-.donations-list {
+.donations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
   margin: 1.5rem 0;
 }
 
-.donation-item {
+.donation-card {
   background: rgba(0, 255, 0, 0.05);
   border: 1px solid rgba(0, 255, 0, 0.3);
   border-radius: 12px;
   padding: 1.5rem;
-  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.donation-card:hover {
+  background: rgba(0, 255, 0, 0.08);
+  border-color: rgba(0, 255, 0, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 0, 0.15);
+}
+
+/* Coming Soon Cards */
+.donation-card.coming-soon {
+  background: rgba(0, 255, 0, 0.02);
+  border: 1px dashed rgba(0, 255, 0, 0.2);
+  opacity: 0.7;
+}
+
+.donation-card.coming-soon:hover {
+  background: rgba(0, 255, 0, 0.04);
+  border-color: rgba(0, 255, 0, 0.3);
+  opacity: 0.9;
+}
+
+.donation-card.coming-soon .sol-amount {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+.donation-card.coming-soon .usd-amount {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
 }
 
 .donation-header {
@@ -5453,9 +5486,33 @@ code {
 }
 
 /* Light theme overrides for donations */
-.about-page.light .donation-item {
+.about-page.light .donation-card {
   background: rgba(37, 99, 235, 0.05);
   border-color: rgba(37, 99, 235, 0.3);
+}
+
+.about-page.light .donation-card:hover {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.5);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+}
+
+.about-page.light .donation-card.coming-soon {
+  background: rgba(37, 99, 235, 0.02);
+  border: 1px dashed rgba(37, 99, 235, 0.2);
+}
+
+.about-page.light .donation-card.coming-soon:hover {
+  background: rgba(37, 99, 235, 0.04);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.about-page.light .donation-card.coming-soon .sol-amount {
+  color: rgba(30, 41, 59, 0.5);
+}
+
+.about-page.light .donation-card.coming-soon .usd-amount {
+  color: rgba(30, 41, 59, 0.6);
 }
 
 .about-page.light .sol-amount {
@@ -5492,13 +5549,18 @@ code {
 
 /* Responsive design for donations */
 @media (max-width: 768px) {
+  .donations-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
   .donation-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
   
-  .donation-item {
+  .donation-card {
     padding: 1rem;
   }
   
@@ -5511,5 +5573,15 @@ code {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .donations-grid {
+    gap: 0.75rem;
+  }
+  
+  .donation-card {
+    padding: 0.75rem;
   }
 }
